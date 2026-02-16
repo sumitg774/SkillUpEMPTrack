@@ -51,8 +51,8 @@ export default function AdminDashboard() {
                 {/* Filters & Table */}
                 <div className="glass-card" style={{ padding: '0' }}>
                     <div style={{ padding: '1.5rem', borderBottom: '1px solid rgba(255,255,255,0.1)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
-                        <div style={{ display: 'flex', gap: '1rem', flex: 1, minWidth: '300px' }}>
-                            <div style={{ position: 'relative', flex: 1 }}>
+                        <div className="admin-filter-bar" style={{ display: 'flex', gap: '1rem', flex: 1, minWidth: '300px' }}>
+                            <div className="admin-filter-search" style={{ position: 'relative', flex: 1 }}>
                                 <Search size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-text-muted)' }} />
                                 <input
                                     type="text"
@@ -66,6 +66,7 @@ export default function AdminDashboard() {
                                 value={selectedDept}
                                 onChange={(e) => setSelectedDept(e.target.value)}
                                 style={{ padding: '0.6rem 1rem', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: 'white' }}
+                                className="admin-filter-select"
                             >
                                 {departments.map(dept => <option key={dept} value={dept} style={{ background: '#111' }}>{dept}</option>)}
                             </select>
@@ -137,6 +138,22 @@ export default function AdminDashboard() {
                     </div>
                 </div>
             </motion.div>
+            <style>{`
+                @media (max-width: 768px) {
+                    h1 { font-size: 1.8rem !important; }
+                    p { font-size: 1rem !important; }
+                    .admin-filter-bar {
+                        min-width: 0 !important;
+                        flex-direction: column !important;
+                    }
+                    .admin-filter-search {
+                        width: 100% !important;
+                    }
+                    .admin-filter-select {
+                        width: 100% !important;
+                    }
+                }
+            `}</style>
         </div>
     );
 }

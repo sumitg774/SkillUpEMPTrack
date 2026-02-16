@@ -400,8 +400,8 @@ export default function ResumeBuilder() {
                 </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '500px 1fr', gap: '2rem' }}>
-                <div style={{ maxHeight: '85vh', overflowY: 'auto', paddingRight: '1rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            <div className="resume-builder-grid">
+                <div className="editor-sidebar">
                     <Section title="Header Design" icon={<User size={18} />}>
                         <InputField label="Profile Name" name="fullName" value={personalInfo.fullName} onChange={handlePersonalInfo} />
                         <InputField label="Headline/Role" name="role" value={personalInfo.role} onChange={handlePersonalInfo} />
@@ -548,8 +548,8 @@ export default function ResumeBuilder() {
                     </button>
                 </div>
 
-                <div style={{ position: 'sticky', top: '2rem', display: 'flex', justifyContent: 'center' }}>
-                    <div ref={resumeRef} style={{ width: '210mm', minHeight: '297mm', background: 'white', color: '#1a1a1a', padding: '15mm', display: 'flex', flexDirection: 'column', boxShadow: '0 20px 50px rgba(0,0,0,0.3)', transform: 'scale(0.55)', transformOrigin: 'top center', fontFamily: '"Inter", sans-serif' }}>
+                <div className="preview-container">
+                    <div ref={resumeRef} className={`resume-paper template-${template}`}>
 
                         {template === 'elite' && (
                             <>
@@ -614,17 +614,86 @@ export default function ResumeBuilder() {
                 </div>
             </div>
             <style>{`
+                .resume-builder-grid {
+                    display: grid;
+                    grid-template-columns: 500px 1fr;
+                    gap: 2rem;
+                }
+                .editor-sidebar {
+                    max-height: 85vh;
+                    overflow-y: auto;
+                    padding-right: 1rem;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 1.5rem;
+                }
+                .preview-container {
+                    position: sticky;
+                    top: 2rem;
+                    display: flex;
+                    justify-content: center;
+                    height: fit-content;
+                }
+                .resume-paper {
+                    width: 210mm;
+                    min-height: 297mm;
+                    background: white;
+                    color: #1a1a1a;
+                    padding: 15mm;
+                    display: flex;
+                    flex-direction: column;
+                    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+                    transform: scale(0.6);
+                    transform-origin: top center;
+                    font-family: "Inter", sans-serif;
+                }
                 .btn-add-item {
                     width: 100%; padding: 0.8rem; border-radius: 10px; border: 2px dashed rgba(255,255,255,0.1);
                     background: rgba(255,255,255,0.02); color: white; cursor: pointer; display: flex; align-items: center;
                     justify-content: center; gap: 0.6rem; font-weight: 600; transition: all 0.3s;
                 }
                 .btn-add-item:hover { background: rgba(255,255,255,0.05); border-color: var(--color-secondary); color: var(--color-secondary); }
-                .edit-card { position: relative; padding: 1.2rem; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; marginBottom: 1.2rem; }
+                .edit-card { position: relative; padding: 1.2rem; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; margin-bottom: 1.2rem; }
                 .btn-delete { position: absolute; top: 0.8rem; right: 0.8rem; color: #ef4444; background: none; border: none; cursor: pointer; opacity: 0.6; transition: 0.2s; }
                 .btn-delete:hover { opacity: 1; transform: scale(1.1); }
-                .btn-move { background: rgba(255,255,255,0.05); color: white; border: none; borderRadius: 4px; cursor: pointer; padding: 4px; display: flex; align-items: center; transition: 0.2s; }
+                .btn-move { background: rgba(255,255,255,0.05); color: white; border: none; border-radius: 4px; cursor: pointer; padding: 4px; display: flex; align-items: center; transition: 0.2s; }
                 .btn-move:hover { background: rgba(255,255,255,0.15); color: var(--color-secondary); }
+
+                @media (max-width: 1200px) {
+                    .resume-paper { transform: scale(0.5); }
+                }
+
+                @media (max-width: 1024px) {
+                    .resume-builder-grid {
+                        grid-template-columns: 1fr;
+                    }
+                    .editor-sidebar {
+                        max-height: none;
+                        overflow-y: visible;
+                    }
+                    .preview-container {
+                        position: relative;
+                        top: 0;
+                        overflow-x: auto;
+                        padding-bottom: 5rem;
+                        justify-content: flex-start;
+                    }
+                    .resume-paper {
+                        transform: scale(0.8);
+                        margin: 0 auto;
+                    }
+                }
+
+                @media (max-width: 768px) {
+                    .resume-paper {
+                        transform: scale(0.4);
+                        transform-origin: top left;
+                        margin-left: 2rem;
+                    }
+                    .preview-container {
+                        height: 500px;
+                    }
+                }
             `}</style>
         </div>
     );

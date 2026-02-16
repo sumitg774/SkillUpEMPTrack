@@ -81,10 +81,10 @@ export default function Prepare() {
                 <h1 style={{ marginTop: '1rem', fontSize: '2.5rem' }}>{title}</h1>
             </div>
 
-            <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
+            <div className="prep-layout">
                 {/* Sidebar Tabs */}
-                <div style={{ flex: '0 0 250px' }}>
-                    <div className="glass-card" style={{ padding: '0.5rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                <div className="prep-sidebar">
+                    <div className="glass-card prep-tabs-card" style={{ padding: '0.5rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                         <button
                             onClick={() => setActiveTab('syllabus')}
                             className={activeTab === 'syllabus' ? 'btn-primary' : 'btn-outline'}
@@ -108,7 +108,7 @@ export default function Prepare() {
                         </button>
                     </div>
 
-                    <div style={{ marginTop: '2rem' }}>
+                    <div className="prep-actions">
                         {(activeTab === 'guides' || activeTab === 'practice') && (
                             <button
                                 onClick={handleGenerateAI}
@@ -121,14 +121,14 @@ export default function Prepare() {
                             </button>
                         )}
 
-                        <Link to={`/assessment/${certId}`} className="btn-primary" style={{ width: '100%', justifyContent: 'center', textAlign: 'center' }}>
+                        <Link to={`/assessment/${certId}`} className="btn-primary" style={{ width: '100%', justifyContent: 'center', textAlign: 'center', textDecoration: 'none', display: 'flex' }}>
                             Ready? Take Test &rarr;
                         </Link>
                     </div>
                 </div>
 
                 {/* Content Area */}
-                <div style={{ flex: 1 }}>
+                <div className="prep-content">
                     <div className="glass-card" style={{ padding: '2rem', minHeight: '500px' }}>
 
                         {activeTab === 'syllabus' && (
@@ -184,6 +184,53 @@ export default function Prepare() {
                     </div>
                 </div>
             </div>
+            <style>{`
+                .prep-layout {
+                    display: flex;
+                    gap: 2rem;
+                }
+                .prep-sidebar {
+                    flex: 0 0 250px;
+                }
+                .prep-actions {
+                    margin-top: 2rem;
+                }
+                .prep-content {
+                    flex: 1;
+                }
+                @media (max-width: 768px) {
+                    .prep-layout {
+                        flex-direction: column;
+                        gap: 1.5rem;
+                    }
+                    .prep-sidebar {
+                        flex: none;
+                        width: 100%;
+                    }
+                    .prep-tabs-card {
+                        flex-direction: row !important;
+                        overflow-x: auto;
+                        padding: 0.25rem !important;
+                    }
+                    .prep-tabs-card button {
+                        flex: 1;
+                        white-space: nowrap;
+                        padding: 0.6rem 1rem !important;
+                        font-size: 0.85rem !important;
+                    }
+                    .prep-actions {
+                        margin-top: 1rem;
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                        gap: 1rem;
+                    }
+                    .prep-actions button, .prep-actions a {
+                        margin-bottom: 0 !important;
+                    }
+                    h1 { font-size: 1.8rem !important; }
+                    .glass-card { padding: 1.25rem !important; }
+                }
+            `}</style>
         </div>
     );
 }

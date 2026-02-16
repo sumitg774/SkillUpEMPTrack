@@ -29,7 +29,7 @@ export default function MyCertificates() {
                     <Link to="/" className="btn-primary">Browse Assessments</Link>
                 </div>
             ) : (
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '2rem' }}>
+                <div className="cert-grid-my" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '2rem' }}>
                     {certs.map((cert) => (
                         <motion.div
                             key={cert.id}
@@ -53,6 +53,15 @@ export default function MyCertificates() {
                     ))}
                 </div>
             )}
+            <style>{`
+                @media (max-width: 768px) {
+                    h1 { font-size: 1.8rem !important; }
+                    .cert-grid-my {
+                        grid-template-columns: 1fr !important;
+                    }
+                    .glass-card { padding: 1.5rem !important; }
+                }
+            `}</style>
         </div>
     );
 }

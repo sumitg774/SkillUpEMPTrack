@@ -52,6 +52,7 @@ export default function Leaderboard() {
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: index * 0.1 }}
+                        className="leaderboard-row"
                         style={{
                             display: 'flex', alignItems: 'center', padding: '1.5rem',
                             borderBottom: '1px solid rgba(255,255,255,0.05)',
@@ -62,7 +63,7 @@ export default function Leaderboard() {
                             {index + 1}
                         </div>
 
-                        <div style={{ margin: '0 1.5rem' }}>
+                        <div className="avatar-container" style={{ margin: '0 1.5rem' }}>
                             <div style={{ width: '48px', height: '48px', borderRadius: '50%', background: user.avatar, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 'bold' }}>
                                 {user.name.charAt(0)}
                             </div>
@@ -78,7 +79,7 @@ export default function Leaderboard() {
                         </div>
 
                         <div style={{ textAlign: 'right' }}>
-                            <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#eab308', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                            <div className="score-text" style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#eab308', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                                 {user.points} <Star size={20} fill="#eab308" />
                             </div>
                             <div style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>POINTS</div>
@@ -86,6 +87,15 @@ export default function Leaderboard() {
                     </motion.div>
                 ))}
             </div>
+            <style>{`
+                @media (max-width: 768px) {
+                    h1 { font-size: 2rem !important; }
+                    .glass-card { margin: 0 1rem !important; }
+                    .leaderboard-row { padding: 1rem !important; }
+                    .avatar-container { margin: 0 0.8rem !important; }
+                    .score-text { font-size: 1.2rem !important; }
+                }
+            `}</style>
         </div>
     );
 }

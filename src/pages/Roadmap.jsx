@@ -35,8 +35,8 @@ export default function InterviewRoadmap() {
             </div>
 
             {/* Role Input */}
-            <div className="glass-card" style={{ maxWidth: '800px', margin: '0 auto 4rem', padding: '2rem' }}>
-                <form onSubmit={handleGenerate} style={{ display: 'flex', gap: '1rem' }}>
+            <div className="glass-card roadmap-search-card" style={{ maxWidth: '800px', margin: '0 auto 4rem', padding: '2rem' }}>
+                <form onSubmit={handleGenerate} className="roadmap-form">
                     <div style={{ position: 'relative', flex: 1 }}>
                         <Compass className="text-primary" size={20} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)' }} />
                         <input
@@ -48,7 +48,7 @@ export default function InterviewRoadmap() {
                             style={{ width: '100%', padding: '1rem 1rem 1rem 3rem', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: 'white', fontSize: '1.1rem', outline: 'none' }}
                         />
                     </div>
-                    <button type="submit" disabled={loading} className="btn-primary" style={{ padding: '0 2rem', fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <button type="submit" disabled={loading} className="btn-primary roadmap-submit-btn">
                         {loading ? 'Generating...' : <><Sparkles size={18} /> Design Roadmap</>}
                     </button>
                 </form>
@@ -75,9 +75,9 @@ export default function InterviewRoadmap() {
                             <div style={{ width: '40px', height: '1px', background: 'var(--color-primary)' }}></div>
                         </div>
 
-                        <div style={{ maxWidth: '900px', margin: '0 auto', position: 'relative' }}>
+                        <div className="roadmap-container" style={{ maxWidth: '900px', margin: '0 auto', position: 'relative' }}>
                             {/* Vertical Line */}
-                            <div style={{ position: 'absolute', left: '20px', top: '0', bottom: '0', width: '2px', background: 'linear-gradient(to bottom, var(--color-primary), var(--color-secondary))', opacity: 0.3 }}></div>
+                            <div className="roadmap-line" style={{ position: 'absolute', left: '20px', top: '0', bottom: '0', width: '2px', background: 'linear-gradient(to bottom, var(--color-primary), var(--color-secondary))', opacity: 0.3 }}></div>
 
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
                                 {roadmap.steps.map((step, idx) => (
@@ -87,9 +87,10 @@ export default function InterviewRoadmap() {
                                         animate={{ opacity: 1, x: 0 }}
                                         transition={{ delay: idx * 0.1 }}
                                         style={{ position: 'relative', paddingLeft: '60px' }}
+                                        className="roadmap-step"
                                     >
                                         {/* Dot */}
-                                        <div style={{
+                                        <div className="roadmap-dot" style={{
                                             position: 'absolute', left: '10px', top: '0', width: '22px', height: '22px',
                                             borderRadius: '50%', background: 'var(--color-background)', border: '4px solid var(--color-primary)',
                                             zIndex: 2, boxShadow: '0 0 15px var(--color-primary)'
@@ -146,6 +147,46 @@ export default function InterviewRoadmap() {
                     <h3>Enter a role above to begin your journey.</h3>
                 </div>
             )}
+            <style>{`
+                .roadmap-form {
+                    display: flex;
+                    gap: 1rem;
+                }
+                .roadmap-submit-btn {
+                    padding: 0 2rem;
+                    font-size: 1rem;
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                }
+                @media (max-width: 768px) {
+                    .roadmap-form {
+                        flex-direction: column;
+                    }
+                    .roadmap-submit-btn {
+                        width: 100%;
+                        justify-content: center;
+                        padding: 1rem;
+                    }
+                    .roadmap-search-card {
+                        padding: 1.5rem !important;
+                        margin-bottom: 2rem !important;
+                    }
+                    .roadmap-container {
+                        padding-left: 40px !important;
+                    }
+                    .roadmap-line {
+                        left: 15px !important;
+                    }
+                    .roadmap-dot {
+                        left: 5px !important;
+                    }
+                    .roadmap-step {
+                        padding-left: 40px !important;
+                    }
+                    h1 { font-size: 2.2rem !important; }
+                }
+            `}</style>
         </div>
     );
 }

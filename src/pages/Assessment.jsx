@@ -57,7 +57,7 @@ export default function Assessment() {
         <div className="container" style={{ paddingTop: '2rem', maxWidth: '1000px' }}>
 
             {/* Top Bar */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', background: 'rgba(255,255,255,0.05)', padding: '1rem 2rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)' }}>
+            <div className="assessment-top-bar">
                 <div>
                     <h2 style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>{data.title} Assessment</h2>
                     <div style={{ fontSize: '0.9rem', color: 'var(--color-text-muted)' }}>Question {currentQ + 1} of {data.questions.length}</div>
@@ -67,10 +67,10 @@ export default function Assessment() {
                 </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: '2rem' }}>
+            <div className="assessment-layout">
 
                 {/* Question Area */}
-                <div className="glass-card">
+                <div className="glass-card assessment-q-area">
                     <h3 style={{ fontSize: '1.1rem', marginBottom: '1.5rem', lineHeight: '1.6' }}>
                         {question.id}. {question.question}
                     </h3>
@@ -116,7 +116,7 @@ export default function Assessment() {
                         </div>
                     )}
 
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '2rem' }}>
+                    <div className="assessment-nav-btns">
                         <button
                             disabled={currentQ === 0}
                             onClick={() => setCurrentQ(prev => prev - 1)}
@@ -146,7 +146,7 @@ export default function Assessment() {
                 </div>
 
                 {/* Sidebar */}
-                <div>
+                <div className="assessment-sidebar">
                     <div className="glass-card" style={{ marginBottom: '1.5rem' }}>
                         <h4 style={{ marginBottom: '1rem', fontSize: '0.9rem', color: 'var(--color-text-muted)' }}>Question Map</h4>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.5rem' }}>
@@ -179,6 +179,56 @@ export default function Assessment() {
                 </div>
 
             </div>
+            <style>{`
+                .assessment-top-bar {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 2rem;
+                    background: rgba(255,255,255,0.05);
+                    padding: 1rem 2rem;
+                    border-radius: 12px;
+                    border: 1px solid rgba(255,255,255,0.1);
+                }
+                .assessment-layout {
+                    display: grid;
+                    grid-template-columns: 1fr 300px;
+                    gap: 2rem;
+                }
+                .assessment-nav-btns {
+                    display: flex;
+                    justify-content: space-between;
+                    marginTop: 2rem;
+                }
+
+                @media (max-width: 768px) {
+                    .assessment-top-bar {
+                        flex-direction: column;
+                        gap: 1rem;
+                        padding: 1rem !important;
+                        text-align: center;
+                    }
+                    .assessment-layout {
+                        grid-template-columns: 1fr;
+                        gap: 1.5rem;
+                    }
+                    .assessment-q-area {
+                        padding: 1.25rem !important;
+                    }
+                    .assessment-nav-btns {
+                        flex-direction: column;
+                        gap: 1rem;
+                    }
+                    .assessment-nav-btns button {
+                        width: 100%;
+                        justify-content: center;
+                    }
+                    .assessment-sidebar {
+                        order: 2;
+                    }
+                    .glass-card { padding: 1rem !important; }
+                }
+            `}</style>
         </div>
     );
 }

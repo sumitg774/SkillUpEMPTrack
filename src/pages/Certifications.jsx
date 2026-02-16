@@ -91,7 +91,7 @@ export default function Certifications() {
             </div>
 
             {/* Certification Cards Grid */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', gap: '2rem' }}>
+            <div className="cert-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', gap: '2rem' }}>
                 {filteredCerts.map((cert) => (
                     <motion.div
                         key={cert.id}
@@ -168,6 +168,18 @@ export default function Certifications() {
                     </motion.div>
                 ))}
             </div>
+            <style>{`
+                @media (max-width: 768px) {
+                    h1 { font-size: 2.2rem !important; }
+                    p { font-size: 1rem !important; }
+                    .cert-grid {
+                        grid-template-columns: 1fr !important;
+                    }
+                    .glass-card {
+                        padding: 1.5rem !important;
+                    }
+                }
+            `}</style>
         </div>
     );
 }
