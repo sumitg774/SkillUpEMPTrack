@@ -3,105 +3,258 @@
     top: 0;
     width: 100%;
     z-index: 9999;
-    padding: 0.5rem 2rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(15, 23, 42, 0.8);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    padding: 0.8rem 2rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(10, 11, 14, 0.8);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     box-sizing: border-box;
-    /* Critical for padding calculation */
-}
-
-.navbar:hover {
-    transform: none;
-    box-shadow: none;
+    transition: all 0.3s ease;
 }
 
 .navbar-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    max-width: 1280px;
+    max-width: 1300px;
     margin: 0 auto;
     padding: 0;
+    position: relative;
 }
 
 .logo {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    font-weight: 800;
-    font-size: 1.25rem;
-    color: var(--color-text-main);
+    gap: 0.6rem;
+    font-weight: 900;
+    font-size: 1.4rem;
+    color: white;
+    text-decoration: none;
+    letter-spacing: -0.02em;
 }
 
 .logo-icon {
     color: var(--color-primary);
 }
 
+.badge-corp {
+    font-size: 0.6rem;
+    padding: 0.15rem 0.45rem;
+    background: var(--color-secondary);
+    color: #000;
+    border-radius: 5px;
+    margin-left: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.nav-menu {
+    display: flex;
+    flex: 1;
+    justify-content: space-between;
+    align-items: center;
+    margin-left: 4rem;
+}
+
 .nav-links {
     display: flex;
-    gap: 2rem;
+    gap: 2.2rem;
 }
 
 .nav-link {
-    color: var(--color-text-muted);
-    font-weight: 500;
+    color: rgba(255, 255, 255, 0.6);
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
     position: relative;
-    transition: color 0.3s;
+    transition: all 0.2s ease;
 }
 
 .nav-link:hover,
 .nav-link.active {
-    color: var(--color-text-main);
+    color: white;
 }
 
 .nav-link.active::after {
     content: '';
     position: absolute;
-    bottom: -4px;
-    left: 0;
-    width: 100%;
-    height: 2px;
+    bottom: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 3px;
     background: var(--color-primary);
-    box-shadow: 0 0 10px var(--color-primary);
+    border-radius: 2px;
+    box-shadow: 0 0 12px var(--color-primary);
+}
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
 }
 
 .user-profile {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    font-weight: 500;
-    background: rgba(255, 255, 255, 0.05);
-    padding: 0.5rem 1rem;
-    border-radius: 9999px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    font-weight: 600;
+    background: rgba(255, 255, 255, 0.04);
+    padding: 0.4rem 0.9rem;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    font-size: 0.9rem;
 }
 
 .avatar {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
     background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
+    font-weight: 800;
+    font-size: 0.8rem;
 }
 
 .mobile-menu-btn {
     display: none;
-    color: var(--color-text-main);
+    color: white;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    padding: 0.6rem;
+    border-radius: 10px;
+    z-index: 10001;
+    transition: all 0.2s;
 }
 
-@media (max-width: 768px) {
+.mobile-menu-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
 
-    .nav-links,
-    .nav-actions {
-        display: none;
+.btn-outline-icon {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.btn-outline-icon:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+@media (max-width: 1100px) {
+    .nav-menu {
+        margin-left: 2rem;
+    }
+
+    .nav-links {
+        gap: 1.5rem;
+    }
+}
+
+@media (max-width: 900px) {
+    .navbar {
+        padding: 0.8rem 1.5rem;
     }
 
     .mobile-menu-btn {
         display: block;
+    }
+
+    .nav-menu {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        background: #0a0b0e;
+        margin: 0;
+        padding: 6rem 2rem 3rem;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 3rem;
+        transform: translateY(-100%);
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 10000;
+        display: flex;
+        /* Always flex, controlled by transform */
+        box-sizing: border-box;
+    }
+
+    .nav-menu.show {
+        transform: translateY(0);
+    }
+
+    .nav-links {
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        gap: 2rem;
+    }
+
+    .nav-link {
+        font-size: 1.4rem;
+        opacity: 0.7;
+    }
+
+    .nav-link.active {
+        opacity: 1;
+        transform: scale(1.1);
+    }
+
+    .nav-link.active::after {
+        bottom: -10px;
+        width: 30px;
+    }
+
+    .nav-actions {
+        flex-direction: column;
+        width: 100%;
+        margin-top: auto;
+        padding-top: 2rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        gap: 1.5rem;
+    }
+
+    .user-profile {
+        width: 100%;
+        justify-content: center;
+        padding: 0.8rem;
+        font-size: 1.1rem;
+        background: rgba(255, 255, 255, 0.03);
+    }
+
+    .nav-actions .btn-outline,
+    .nav-actions .btn-primary {
+        width: 100%;
+        justify-content: center;
+        padding: 1rem;
+        font-size: 1rem;
+    }
+
+    .btn-outline-icon {
+        width: 100%;
+        height: 50px;
+    }
+
+    .navbar.menu-open {
+        background: #0a0b0e;
+        border-bottom-color: transparent;
     }
 }

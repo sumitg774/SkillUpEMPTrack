@@ -28,15 +28,6 @@ function App() {
           <Navbar onOpenKeyModal={() => setIsKeyModalOpen(true)} />
           <APIKeyModal isOpen={isKeyModalOpen} onClose={() => setIsKeyModalOpen(false)} />
           <main className="main-content">
-            {/* Global Promotion Banner / Ad Spot */}
-            <div style={{ padding: '1rem 2rem 0', maxWidth: '1200px', margin: '0 auto' }}>
-              <div style={globalBannerStyle}>
-                <span style={pillStyle}>Featured</span>
-                <span style={{ fontSize: '0.9rem', fontWeight: '500' }}>🚀 Unlock Unlimited AI Resume Reviews & Roadmap Generations for $4.99/mo!</span>
-                <button style={bannerBtnStyle}>Upgrade Now</button>
-              </div>
-            </div>
-
             <Routes>
               {/* Public Routes */}
               <Route path="/login" element={<Login />} />
@@ -99,36 +90,3 @@ function App() {
 
 export default App;
 
-const globalBannerStyle = {
-  background: 'linear-gradient(90deg, rgba(59,130,246,0.1) 0%, rgba(168,85,247,0.1) 100%)',
-  border: '1px solid rgba(255,255,255,0.05)',
-  borderRadius: '16px',
-  padding: '0.8rem 1.5rem',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  gap: '1rem',
-  backdropFilter: 'blur(10px)'
-};
-
-const pillStyle = {
-  background: 'var(--color-secondary)',
-  color: 'black',
-  padding: '0.2rem 0.6rem',
-  borderRadius: '6px',
-  fontSize: '0.7rem',
-  fontWeight: '800',
-  textTransform: 'uppercase'
-};
-
-const bannerBtnStyle = {
-  background: 'white',
-  color: 'black',
-  border: 'none',
-  padding: '0.5rem 1rem',
-  borderRadius: '8px',
-  fontSize: '0.8rem',
-  fontWeight: '700',
-  cursor: 'pointer',
-  transition: 'transform 0.2s'
-};
