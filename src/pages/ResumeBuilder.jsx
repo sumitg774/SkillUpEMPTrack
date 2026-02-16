@@ -22,20 +22,19 @@ export default function ResumeBuilder() {
     const [saveSuccess, setSaveSuccess] = useState(false);
     const [aiFeedback, setAiFeedback] = useState(null);
     const resumeRef = useRef();
-    const { saveResume, getResume } = useAuth();
+    const { user, saveResume, getResume } = useAuth();
 
     // State
     const defaultPersonal = {
-        fullName: 'SUMIT KUMAR GUPTA',
-        email: 'sumit@example.com',
-        phone: '+91 9876543210',
-        location: 'New Delhi, India',
-        summary: 'Experienced Software Engineer specializing in Mobile & Web technologies. Proven track record in leading AI projects and cross-platform application development.',
-        role: 'Full Stack Developer',
+        fullName: 'John Doe',
+        role: 'Senior Software Architect',
+        email: 'john.doe@example.com',
+        phone: '+1 234 567 890',
+        location: 'San Francisco, CA',
+        summary: 'A results-driven professional with over 8 years of experience in building scalable web applications and leading high-performance teams. Expert in modern JavaScript frameworks and cloud architecture.',
         customLinks: [
-            { type: 'linkedin', url: 'linkedin.com/in/sumit' },
-            { type: 'github', url: 'github.com/sumit' },
-            { type: 'portfolio', url: 'sumit.dev' }
+            { type: 'linkedin', url: 'linkedin.com/in/johndoe' },
+            { type: 'github', url: 'github.com/johndoe' }
         ]
     };
 
@@ -50,30 +49,31 @@ export default function ResumeBuilder() {
         achievements: 'HONORS & AWARDS',
         languages: 'LANGUAGES'
     });
-    const [experience, setExperience] = useState([]);
+    const [experience, setExperience] = useState([
+        { id: 1, company: 'Tech Solutions Inc.', role: 'Senior Developer', duration: '2021 - Present', desc: 'Leading the development of a flagship cloud platform, improving deployment efficiency by 40%.' }
+    ]);
     const [projects, setProjects] = useState([
-        { id: 1, title: 'Zedbud', duration: 'Dec\'23 - Present', stack: 'Swift Storyboard, MVP, iOS SDK', desc: 'Developed and maintained core features using Swift, Storyboard, and Core Data.' },
-        { id: 2, title: 'CTEK App', duration: 'July\'22 - Nov\'23', stack: 'Swift, SwiftUI, Combine', desc: 'Built key modules using Swift and Storyboard. Integrated BLE for hardware sync.' }
+        { id: 1, title: 'Quantum E-commerce', duration: '2023', stack: 'React, Node.js, AWS', desc: 'Built a high-performance e-commerce engine handling 10k+ concurrent users.' }
     ]);
     const [education, setEducation] = useState([
-        { id: 1, school: 'Your University', degree: 'B.Tech Computer Science', year: '2022' }
+        { id: 1, school: 'Global Technical University', degree: 'B.S. in Computer Science', year: '2018' }
     ]);
     const [skills, setSkills] = useState([
-        { name: 'Swift/iOS', level: 95 },
-        { name: 'React Native', level: 85 },
-        { name: 'Node.js', level: 80 }
+        { name: 'Full Stack Development', level: 90 },
+        { name: 'Cloud Architecture', level: 85 },
+        { name: 'System Design', level: 80 }
     ]);
     const [achievements, setAchievements] = useState([
-        { id: 1, title: 'Star of the CTEK Sprint 23.1.3' }
+        { id: 1, title: 'Excellence in Engineering Award 2023' }
     ]);
     const [languages, setLanguages] = useState([
-        { name: 'English', label: 'Proficient' },
-        { name: 'Hindi', label: 'Native' }
+        { name: 'English', label: 'Native' },
+        { name: 'Spanish', label: 'Professional' }
     ]);
     const [dayLife, setDayLife] = useState([
-        { activity: 'Architecture & Coding', percentage: 60 },
-        { activity: 'Meetings', percentage: 20 },
-        { activity: 'Research', percentage: 20 }
+        { activity: 'Strategic Planning', percentage: 40 },
+        { activity: 'Core Development', percentage: 40 },
+        { activity: 'Mentorship', percentage: 20 }
     ]);
     const [customSections, setCustomSections] = useState([]);
 
