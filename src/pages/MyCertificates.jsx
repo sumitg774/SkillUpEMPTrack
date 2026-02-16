@@ -59,7 +59,6 @@ export default function MyCertificates() {
                     .cert-grid-my {
                         grid-template-columns: 1fr !important;
                     }
-                    .glass-card { padding: 1.5rem !important; }
                 }
             `}</style>
         </div>

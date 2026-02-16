@@ -162,6 +162,40 @@ button {
   }
 }
 
+@media (max-width: 768px) {
+  html {
+    font-size: 13px;
+  }
+
+  .container {
+    padding: 0 1.25rem;
+  }
+
+  h1 {
+    font-size: 1.8rem !important;
+    letter-spacing: -0.01em !important;
+  }
+
+  h2 {
+    font-size: 1.5rem !important;
+  }
+
+  h3 {
+    font-size: 1.3rem !important;
+  }
+
+  .glass-card {
+    padding: 1rem !important;
+    border-radius: 12px;
+  }
+
+  .btn-primary,
+  .btn-outline {
+    padding: 0.6rem 1.2rem !important;
+    font-size: 0.9rem !important;
+  }
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;

@@ -18,7 +18,7 @@ export default function APIKeyModal({ isOpen, onClose }) {
 
     return (
         <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.8)', zIndex: 10000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <div className="glass-card" style={{ width: '100%', maxWidth: '500px', padding: '2rem', position: 'relative' }}>
+            <div className="glass-card api-modal-card" style={{ width: '100%', maxWidth: '500px', padding: '2rem', position: 'relative', margin: '1rem' }}>
                 <button onClick={onClose} style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'transparent', border: 'none', color: 'white', cursor: 'pointer' }}>
                     <X size={24} />
                 </button>
@@ -45,6 +45,14 @@ export default function APIKeyModal({ isOpen, onClose }) {
                         <Check size={18} /> Save Key
                     </button>
                 </div>
+                <style>{`
+                    @media (max-width: 768px) {
+                        .api-modal-card {
+                            padding: 1.5rem !important;
+                            border-radius: 16px !important;
+                        }
+                    }
+                `}</style>
             </div>
         </div>
     );

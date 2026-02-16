@@ -169,22 +169,25 @@ export default function InterviewRoadmap() {
                         padding: 1rem;
                     }
                     .roadmap-search-card {
-                        padding: 1.5rem !important;
+                        padding: 1.25rem !important;
                         margin-bottom: 2rem !important;
                     }
                     .roadmap-container {
-                        padding-left: 40px !important;
+                        padding-left: 30px !important;
                     }
                     .roadmap-line {
-                        left: 15px !important;
+                        left: 10px !important;
                     }
                     .roadmap-dot {
-                        left: 5px !important;
+                        left: 0px !important;
                     }
                     .roadmap-step {
-                        padding-left: 40px !important;
+                        padding-left: 30px !important;
                     }
-                    h1 { font-size: 2.2rem !important; }
+                    .roadmap-step h3 { font-size: 1.2rem !important; }
+                    h1 { font-size: 1.8rem !important; }
+                    h2 { font-size: 1.4rem !important; }
+                    p { font-size: 1rem !important; }
                 }
             `}</style>
         </div>

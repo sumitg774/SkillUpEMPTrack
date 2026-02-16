@@ -89,8 +89,9 @@ export default function Leaderboard() {
             </div>
             <style>{`
                 @media (max-width: 768px) {
-                    h1 { font-size: 2rem !important; }
-                    .glass-card { margin: 0 1rem !important; }
+                    h1 { font-size: 1.8rem !important; }
+                    h1 svg { width: 32px; height: 32px; }
+                    .glass-card { margin: 0 !important; }
                     .leaderboard-row { padding: 1rem !important; }
                     .avatar-container { margin: 0 0.8rem !important; }
                     .score-text { font-size: 1.2rem !important; }

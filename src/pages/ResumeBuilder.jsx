@@ -373,30 +373,32 @@ export default function ResumeBuilder() {
                 )}
             </AnimatePresence>
 
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '2rem' }}>
-                <div>
-                    <h1 style={{ fontSize: '2.5rem', fontWeight: '900', marginBottom: '0.5rem' }}>
+            <div className="builder-header">
+                <div className="builder-title-section">
+                    <h1 className="builder-main-title">
                         The <span className="text-gradient">Elite</span> Studio
                     </h1>
-                    <div style={{ display: 'flex', gap: '0.8rem', overflowX: 'auto', paddingBottom: '0.5rem', maxWidth: '700px' }}>
+                    <div className="template-chips">
                         {[
-                            { id: 'elite', name: 'Elite Screen', icon: <Gem size={14} /> },
-                            { id: 'pro_executive', name: 'Elite II (Pro)', icon: <Briefcase size={14} /> },
-                            { id: 'modern_compact', name: 'Elite III (Compact)', icon: <Layout size={14} /> },
-                            { id: 'minimal_bold', name: 'Elite IV (Bold)', icon: <Sparkles size={14} /> }
+                            { id: 'elite', name: 'Elite', icon: <Gem size={12} /> },
+                            { id: 'pro_executive', name: 'Pro', icon: <Briefcase size={12} /> },
+                            { id: 'modern_compact', name: 'Modern', icon: <Layout size={12} /> },
+                            { id: 'minimal_bold', name: 'Bold', icon: <Sparkles size={12} /> }
                         ].map(t => (
-                            <button key={t.id} onClick={() => setTemplate(t.id)} className={`chip ${template === t.id ? 'active' : ''}`} style={{ padding: '0.6rem 1rem', borderRadius: '12px', background: template === t.id ? 'var(--color-secondary)' : 'rgba(255,255,255,0.03)', color: template === t.id ? 'black' : 'white', border: '1px solid rgba(255,255,255,0.1)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem', fontWeight: 'bold' }}>
+                            <button key={t.id} onClick={() => setTemplate(t.id)} className={`chip ${template === t.id ? 'active' : ''}`}>
                                 {t.icon} {t.name}
                             </button>
                         ))}
                     </div>
                 </div>
-                <div style={{ display: 'flex', gap: '0.8rem', alignItems: 'center' }}>
-                    <AnimatePresence>{saveSuccess && <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} style={{ color: 'var(--color-success)', fontSize: '0.8rem' }}><CheckCircle size={14} /> Synced</motion.span>}</AnimatePresence>
-                    <button onClick={() => setImportModal(true)} className="btn-outline" style={{ borderColor: 'rgba(59, 130, 246, 0.4)', color: '#3b82f6' }}><Upload size={14} /> Import Data</button>
-                    <button onClick={handleExportJSON} className="btn-outline" title="Download JSON Backup"><FileDown size={14} /> Backup</button>
-                    <button onClick={handleSave} disabled={isSaving} className="btn-outline"><Layout size={14} /> {isSaving ? 'Saving...' : 'Draft'}</button>
-                    <button onClick={downloadPDF} className="btn-primary" style={{ padding: '0.6rem 1.2rem' }}><Download size={16} /> Export PDF</button>
+                <div className="builder-actions">
+                    <AnimatePresence>{saveSuccess && <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} style={{ color: 'var(--color-success)', fontSize: '0.7rem' }}><CheckCircle size={12} /> Synced</motion.span>}</AnimatePresence>
+                    <div className="action-btn-group">
+                        <button onClick={() => setImportModal(true)} className="btn-outline btn-sm" style={{ color: '#3b82f6' }}><Upload size={12} /> Import</button>
+                        <button onClick={handleExportJSON} className="btn-outline btn-sm"><FileDown size={12} /></button>
+                        <button onClick={handleSave} disabled={isSaving} className="btn-outline btn-sm">{isSaving ? '...' : <Layout size={12} />}</button>
+                        <button onClick={downloadPDF} className="btn-primary btn-sm"><Download size={14} /> PDF</button>
+                    </div>
                 </div>
             </div>
 
@@ -614,6 +616,15 @@ export default function ResumeBuilder() {
                 </div>
             </div>
             <style>{`
+                .builder-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem; gap: 1rem; flex-wrap: wrap; }
+                .builder-main-title { fontSize: 2.5rem; fontWeight: 900; marginBottom: 1rem; }
+                .template-chips { display: flex; gap: 0.6rem; overflow-x: auto; padding-bottom: 0.5rem; max-width: 100%; }
+                .chip { padding: 0.5rem 0.8rem; border-radius: 10px; background: rgba(255,255,255,0.03); color: white; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; display: flex; align-items: center; gap: 0.4rem; white-space: nowrap; font-size: 0.85rem; }
+                .chip.active { background: var(--color-secondary); color: black; font-weight: bold; border-color: var(--color-secondary); }
+                .builder-actions { display: flex; gap: 0.8rem; align-items: center; }
+                .action-btn-group { display: flex; gap: 0.5rem; }
+                .btn-sm { padding: 0.5rem 0.8rem; font-size: 0.8rem; }
+                
                 .resume-builder-grid {
                     display: grid;
                     grid-template-columns: 500px 1fr;
@@ -633,6 +644,7 @@ export default function ResumeBuilder() {
                     display: flex;
                     justify-content: center;
                     height: fit-content;
+                    overflow: visible;
                 }
                 .resume-paper {
                     width: 210mm;
@@ -664,6 +676,8 @@ export default function ResumeBuilder() {
                 }
 
                 @media (max-width: 1024px) {
+                    .builder-header { flex-direction: column; align-items: flex-start; }
+                    .builder-actions { width: 100%; justify-content: space-between; }
                     .resume-builder-grid {
                         grid-template-columns: 1fr;
                     }
@@ -675,23 +689,25 @@ export default function ResumeBuilder() {
                         position: relative;
                         top: 0;
                         overflow-x: auto;
-                        padding-bottom: 5rem;
-                        justify-content: flex-start;
+                        padding-bottom: 2rem;
+                        justify-content: center;
                     }
                     .resume-paper {
-                        transform: scale(0.8);
+                        transform: scale(0.5);
                         margin: 0 auto;
+                        transform-origin: top center;
                     }
                 }
 
                 @media (max-width: 768px) {
+                    .builder-main-title { font-size: 1.8rem; }
                     .resume-paper {
-                        transform: scale(0.4);
-                        transform-origin: top left;
-                        margin-left: 2rem;
+                        transform: scale(0.35);
+                        margin-top: -100px; /* Offset for better visibility when scaled */
                     }
                     .preview-container {
-                        height: 500px;
+                        height: 450px;
+                        margin-top: -50px;
                     }
                 }
             `}</style>
