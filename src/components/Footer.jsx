@@ -1,5 +1,5 @@
 import React from 'react';
-import { Github, Twitter, Linkedin, Mail, ExternalLink, ShieldCheck, Heart } from 'lucide-react';
+import { Github, Twitter, Linkedin, Mail, ExternalLink, ShieldCheck, Heart, Phone } from 'lucide-react';
 
 export default function Footer() {
     return (
@@ -20,13 +20,13 @@ export default function Footer() {
                         </div>
                     </div>
 
-                    {/* Ad Placement 1 (Placeholder) */}
-                    <div style={adSection}>
-                        <div style={adLabel}>SPONSORED</div>
-                        <div style={adPlaceholder}>
-                            <div style={{ fontSize: '0.8rem', opacity: 0.5 }}>Your Ad Here</div>
-                            <div style={{ fontSize: '0.7rem', marginTop: '4px', color: 'var(--color-secondary)' }}>Premium Hosting starting at $2/mo</div>
-                        </div>
+                    {/* Contact Section */}
+                    <div style={linksSection}>
+                        <h4 style={sectionTitle}>Contact Us</h4>
+                        <ul style={listStyle}>
+                            <li><a href="mailto:support@skillup.com" style={linkItem}><Mail size={14} style={{ marginRight: '8px', verticalAlign: 'middle' }} /> support@skillup.com</a></li>
+                            <li><a href="tel:+1234567890" style={linkItem}><Phone size={14} style={{ marginRight: '8px', verticalAlign: 'middle' }} /> +1 (234) 567-890</a></li>
+                        </ul>
                     </div>
 
                     {/* Quick Links */}
@@ -38,15 +38,6 @@ export default function Footer() {
                             <li><a href="/resume" style={linkItem}>Resume Builder</a></li>
                             <li><a href="/leaderboard" style={linkItem}>Leaderboard</a></li>
                         </ul>
-                    </div>
-
-                    {/* Ad Placement 2 (Placeholder) */}
-                    <div style={adSection}>
-                        <div style={adLabel}>ADVERTISEMENT</div>
-                        <div style={adPlaceholder}>
-                            <div style={{ fontSize: '0.8rem', opacity: 0.5 }}>AI Tools Bundle</div>
-                            <button style={adButton}>Check Deals <ExternalLink size={10} /></button>
-                        </div>
                     </div>
                 </div>
 
@@ -81,7 +72,7 @@ const contentStyle = {
 
 const gridStyle = {
     display: 'grid',
-    gridTemplateColumns: '1.5fr 1fr 1fr 1fr',
+    gridTemplateColumns: '1.5fr 1fr 1fr',
     gap: '3rem',
     marginBottom: '4rem'
 };
