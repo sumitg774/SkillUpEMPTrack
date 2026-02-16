@@ -545,7 +545,7 @@ export default function ResumeBuilder() {
                             )}
                         </div>
                     ))}
-                    <button onClick={() => addItem('custom_sec')} className="btn-add-item" style={{ borderStyle: 'solid', background: 'var(--color-secondary', color: 'black', height: '60px', fontSize: '1.1rem' }}>
+                    <button onClick={() => addItem('custom_sec')} className="btn-add-item btn-custom-add">
                         <Plus size={20} /> Add New Section (Certifications, Volunteer, etc.)
                     </button>
                 </div>
@@ -615,6 +615,19 @@ export default function ResumeBuilder() {
                     </div>
                 </div>
             </div>
+            {/* Mobile Jump to Preview FAB */}
+            <button
+                onClick={() => document.querySelector('.preview-container')?.scrollIntoView({ behavior: 'smooth' })}
+                className="btn-primary jump-to-preview-mobile"
+                style={{
+                    position: 'fixed', bottom: '2rem', right: '1.5rem', borderRadius: '50%', width: '56px', height: '56px',
+                    display: 'none', alignItems: 'center', justifyContent: 'center', zIndex: 100, boxShadow: '0 8px 25px rgba(0,0,0,0.5)',
+                    padding: 0
+                }}
+            >
+                <Layout size={24} />
+            </button>
+
             <style>{`
                 .builder-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem; gap: 1rem; flex-wrap: wrap; }
                 .builder-main-title { fontSize: 2.5rem; fontWeight: 900; marginBottom: 1rem; }
@@ -671,6 +684,10 @@ export default function ResumeBuilder() {
                 .btn-move { background: rgba(255,255,255,0.05); color: white; border: none; border-radius: 4px; cursor: pointer; padding: 4px; display: flex; align-items: center; transition: 0.2s; }
                 .btn-move:hover { background: rgba(255,255,255,0.15); color: var(--color-secondary); }
 
+                .btn-custom-add { 
+                    border-style: solid; background: var(--color-secondary); color: black; height: 60px; font-size: 1.1rem; margin-top: 1rem;
+                }
+
                 @media (max-width: 1200px) {
                     .resume-paper { transform: scale(0.5); }
                 }
@@ -701,16 +718,41 @@ export default function ResumeBuilder() {
 
                 @media (max-width: 768px) {
                     .builder-main-title { font-size: 1.8rem; }
+                    .btn-custom-add { height: 50px; font-size: 0.95rem; }
                     .resume-paper {
-                        transform: scale(0.35);
-                        margin-top: -100px; /* Offset for better visibility when scaled */
+                        transform: scale(0.45); /* Better width for mobile */
+                        margin: 0 auto;
+                        transform-origin: top center;
                     }
                     .preview-container {
-                        height: 450px;
-                        margin-top: -50px;
+                        height: 500px;
+                        margin-top: 2rem;
+                        padding: 1rem 0;
+                        overflow: hidden;
+                        background: rgba(255,255,255,0.02);
+                        border: 1px solid rgba(255,255,255,0.05);
+                        border-radius: 16px;
+                    }
+                    .btn-add-item {
+                        padding: 0.6rem !important;
+                        font-size: 0.9rem !important;
+                    }
+                    .preview-label-mobile {
+                        display: block;
+                        text-align: center;
+                        color: var(--color-text-muted);
+                        font-size: 0.8rem;
+                        margin-bottom: 1rem;
+                        font-weight: bold;
+                        text-transform: uppercase;
+                        letter-spacing: 0.1em;
+                    }
+                    .jump-to-preview-mobile {
+                        display: flex !important;
                     }
                 }
             `}</style>
+            <div className="preview-label-mobile" style={{ display: 'none' }}>Live Preview</div>
         </div>
     );
 }
