@@ -400,7 +400,7 @@ export default function ResumeBuilder() {
                 </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '500px 1fr', gap: '3rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '500px 1fr 200px', gap: '2rem' }}>
                 <div style={{ maxHeight: '85vh', overflowY: 'auto', paddingRight: '1rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                     <Section title="Header Design" icon={<User size={18} />}>
                         <InputField label="Profile Name" name="fullName" value={personalInfo.fullName} onChange={handlePersonalInfo} />
@@ -548,8 +548,8 @@ export default function ResumeBuilder() {
                     </button>
                 </div>
 
-                <div style={{ position: 'sticky', top: '2rem' }}>
-                    <div ref={resumeRef} style={{ width: '210mm', minHeight: '297mm', background: 'white', color: '#1a1a1a', padding: '15mm', display: 'flex', flexDirection: 'column', boxShadow: '0 20px 50px rgba(0,0,0,0.3)', transform: 'scale(0.68)', transformOrigin: 'top center', fontFamily: '"Inter", sans-serif' }}>
+                <div style={{ position: 'sticky', top: '2rem', display: 'flex', justifyContent: 'center' }}>
+                    <div ref={resumeRef} style={{ width: '210mm', minHeight: '297mm', background: 'white', color: '#1a1a1a', padding: '15mm', display: 'flex', flexDirection: 'column', boxShadow: '0 20px 50px rgba(0,0,0,0.3)', transform: 'scale(0.55)', transformOrigin: 'top center', fontFamily: '"Inter", sans-serif' }}>
 
                         {template === 'elite' && (
                             <>
@@ -612,6 +612,23 @@ export default function ResumeBuilder() {
                         )}
                     </div>
                 </div>
+
+                {/* Sidebar Ads */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', position: 'sticky', top: '2rem', height: 'fit-content' }}>
+                    <div style={sidebarAdStyle}>
+                        <div style={adTag}>PRO</div>
+                        <h4 style={adTitle}>Job Search Booster</h4>
+                        <p style={adDesc}>Apply to 100+ relevant roles with 1 click using AI.</p>
+                        <button style={adBtn}>Get Started</button>
+                    </div>
+
+                    <div style={sidebarAdStyle}>
+                        <div style={adTag}>NEW</div>
+                        <h4 style={adTitle}>AI Career Path</h4>
+                        <p style={adDesc}>Get a custom roadmap to reach $150k+ salary.</p>
+                        <button style={adBtn}>View Roadmap</button>
+                    </div>
+                </div>
             </div>
             <style>{`
                 .btn-add-item {
@@ -671,4 +688,47 @@ function InputField({ label, name, value, onChange, isTextarea = false }) {
 
 const inputStyle = {
     width: '100%', padding: '0.8rem', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px', color: 'white', outline: 'none', fontSize: '0.9rem', transition: 'all 0.3s'
+};
+
+const sidebarAdStyle = {
+    padding: '1.2rem',
+    background: 'rgba(255,255,255,0.02)',
+    border: '1px solid rgba(255,255,255,0.08)',
+    borderRadius: '16px',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '0.6rem'
+};
+
+const adTag = {
+    fontSize: '0.65rem',
+    fontWeight: '900',
+    color: 'var(--color-secondary)',
+    letterSpacing: '0.1em'
+};
+
+const adTitle = {
+    fontSize: '0.95rem',
+    fontWeight: '800',
+    margin: 0,
+    color: 'white'
+};
+
+const adDesc = {
+    fontSize: '0.8rem',
+    color: '#888',
+    lineHeight: '1.4',
+    margin: 0
+};
+
+const adBtn = {
+    marginTop: '0.4rem',
+    background: 'rgba(255,255,255,0.05)',
+    border: '1px solid rgba(255,255,255,0.1)',
+    color: 'white',
+    padding: '0.5rem',
+    borderRadius: '8px',
+    fontSize: '0.8rem',
+    fontWeight: '600',
+    cursor: 'pointer'
 };
