@@ -169,15 +169,15 @@ export default function Certifications() {
             </div>
             <style>{`
                 .portal-header { text-align: center; margin-bottom: 4rem; }
-                .portal-title { fontSize: 3rem; fontWeight: 800; marginBottom: 1rem; }
-                .portal-subtitle { color: var(--color-text-muted); fontSize: 1.2rem; maxWidth: 600px; margin: 0 auto; }
+                .portal-title { font-size: 3rem; font-weight: 800; margin-bottom: 1rem; }
+                .portal-subtitle { color: var(--color-text-muted); font-size: 1.2rem; max-width: 600px; margin: 0 auto; }
                 
                 .search-container { max-width: 600px; margin: 0 auto 3rem; position: relative; }
                 .search-icon { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--color-text-muted); width: 18px; }
-                .search-input { width: 100%; padding: 0.8rem 1rem 0.8rem 3rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); borderRadius: 12px; color: white; fontSize: 1rem; outline: none; }
+                .search-input { width: 100%; padding: 0.8rem 1rem 0.8rem 3rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: white; font-size: 1rem; outline: none; }
 
                 .cert-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 2rem; }
-                .cert-card { display: flex; flexDirection: column; height: 100%; position: relative; overflow: hidden; padding: 2rem; }
+                .cert-card { display: flex; flex-direction: column; height: 100%; position: relative; overflow: hidden; padding: 2rem; }
 
                 @media (max-width: 768px) {
                     .portal-header { margin-bottom: 2rem; }

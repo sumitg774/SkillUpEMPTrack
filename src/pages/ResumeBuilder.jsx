@@ -630,7 +630,7 @@ export default function ResumeBuilder() {
 
             <style>{`
                 .builder-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem; gap: 1rem; flex-wrap: wrap; }
-                .builder-main-title { fontSize: 2.5rem; fontWeight: 900; marginBottom: 1rem; }
+                .builder-main-title { font-size: 2.5rem; font-weight: 900; margin-bottom: 1rem; }
                 .template-chips { display: flex; gap: 0.6rem; overflow-x: auto; padding-bottom: 0.5rem; max-width: 100%; }
                 .chip { padding: 0.5rem 0.8rem; border-radius: 10px; background: rgba(255,255,255,0.03); color: white; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; display: flex; align-items: center; gap: 0.4rem; white-space: nowrap; font-size: 0.85rem; }
                 .chip.active { background: var(--color-secondary); color: black; font-weight: bold; border-color: var(--color-secondary); }
