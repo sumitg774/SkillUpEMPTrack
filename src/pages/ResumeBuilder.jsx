@@ -123,9 +123,9 @@ export default function ResumeBuilder() {
     const handlePersonalInfo = (e) => setPersonalInfo({ ...personalInfo, [e.target.name]: e.target.value });
 
     const addItem = (type) => {
-        if (type === 'exp') setExperience([...experience, { id: Date.now(), company: '', role: '', duration: '', desc: '', isBulleted: true }]);
-        if (type === 'proj') setProjects([...projects, { id: Date.now(), title: '', duration: '', stack: '', desc: '', isBulleted: true }]);
-        if (type === 'edu') setEducation([...education, { id: Date.now(), school: '', degree: '', year: '' }]);
+        if (type === 'exp') setExperience([...experience, { id: Date.now(), company: '', role: '', duration: '', desc: '', location: '', extraFields: [], isBulleted: true }]);
+        if (type === 'proj') setProjects([...projects, { id: Date.now(), title: '', duration: '', stack: '', desc: '', extraFields: [], isBulleted: true }]);
+        if (type === 'edu') setEducation([...education, { id: Date.now(), school: '', degree: '', year: '', extraFields: [] }]);
         if (type === 'skill') setSkills([...skills, { name: '', level: 50 }]);
         if (type === 'ach') setAchievements([...achievements, { id: Date.now(), title: '' }]);
         if (type === 'lang') setLanguages([...languages, { name: '', label: '' }]);
@@ -135,6 +135,31 @@ export default function ResumeBuilder() {
             setCustomSections([...customSections, { id: newId, title: 'New Section', content: '', isBulleted: false }]);
             setSectionOrder([...sectionOrder, newId]);
         }
+    };
+
+    const addExtraField = (type, index) => {
+        const updateMap = { exp: [experience, setExperience], proj: [projects, setProjects], edu: [education, setEducation] };
+        const [data, setter] = updateMap[type];
+        const newData = [...data];
+        if (!newData[index].extraFields) newData[index].extraFields = [];
+        newData[index].extraFields.push({ label: '', value: '' });
+        setter(newData);
+    };
+
+    const updateExtraField = (type, itemIdx, fieldIdx, key, val) => {
+        const updateMap = { exp: [experience, setExperience], proj: [projects, setProjects], edu: [education, setEducation] };
+        const [data, setter] = updateMap[type];
+        const newData = [...data];
+        newData[itemIdx].extraFields[fieldIdx][key] = val;
+        setter(newData);
+    };
+
+    const removeExtraField = (type, itemIdx, fieldIdx) => {
+        const updateMap = { exp: [experience, setExperience], proj: [projects, setProjects], edu: [education, setEducation] };
+        const [data, setter] = updateMap[type];
+        const newData = [...data];
+        newData[itemIdx].extraFields.splice(fieldIdx, 1);
+        setter(newData);
     };
 
     const removeItem = (type, index) => {
@@ -349,6 +374,11 @@ export default function ResumeBuilder() {
                     <div key={p.id} style={{ marginBottom: sectionGap }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: '700' }}><span>{p.title}</span><span style={{ color: '#666', fontSize: '0.85rem' }}>{p.duration}</span></div>
                         <div style={{ fontSize: '0.85rem', color: atsMode ? '#000' : themeColor, fontWeight: '600', marginBottom: '0.2rem' }}>{p.stack}</div>
+                        {p.extraFields?.length > 0 && (
+                            <div style={{ fontSize: '0.8rem', display: 'flex', flexWrap: 'wrap', gap: '0.8rem', marginBottom: '0.2rem', color: '#666' }}>
+                                {p.extraFields.map((f, idx) => (f.label || f.value) && <span key={idx}><b>{f.label}:</b> {f.value}</span>)}
+                            </div>
+                        )}
                         {renderDescription(p.desc, p.isBulleted, { fontSize: '0.9rem', color: '#333' })}
                     </div>
                 ))}
@@ -359,7 +389,15 @@ export default function ResumeBuilder() {
                 {experience.map(exp => (
                     <div key={exp.id} style={{ marginBottom: sectionGap }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: '700' }}><span>{exp.company}</span><span style={{ color: '#666', fontSize: '0.85rem' }}>{exp.duration}</span></div>
-                        <div style={{ fontWeight: '600', color: '#444', fontSize: '0.9rem' }}>{exp.role}</div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <div style={{ fontWeight: '600', color: '#444', fontSize: '0.9rem' }}>{exp.role}</div>
+                            {exp.location && <div style={{ fontSize: '0.8rem', color: '#888' }}><MapPin size={10} /> {exp.location}</div>}
+                        </div>
+                        {exp.extraFields?.length > 0 && (
+                            <div style={{ fontSize: '0.8rem', display: 'flex', flexWrap: 'wrap', gap: '0.8rem', margin: '0.2rem 0', color: '#666' }}>
+                                {exp.extraFields.map((f, idx) => (f.label || f.value) && <span key={idx}><b>{f.label}:</b> {f.value}</span>)}
+                            </div>
+                        )}
                         {renderDescription(exp.desc, exp.isBulleted, { fontSize: '0.9rem', marginTop: '0.2rem', color: '#333' })}
                     </div>
                 ))}
@@ -374,7 +412,20 @@ export default function ResumeBuilder() {
         );
         if (type === 'education') return (
             <ExecutiveSection title={sectionTitles.education.toUpperCase()} border={borderStyle}>
-                {education.map(edu => <div key={edu.id} style={{ marginBottom: '0.3rem' }}><b>{edu.school}</b> · <span style={{ fontSize: '0.9rem' }}>{edu.degree} ({edu.year})</span></div>)}
+                {education.map(edu => (
+                    <div key={edu.id} style={{ marginBottom: sectionGap }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: '700' }}>
+                            <span>{edu.school}</span>
+                            <span style={{ color: '#666', fontSize: '0.85rem' }}>{edu.year}</span>
+                        </div>
+                        <div style={{ fontSize: '0.9rem', color: '#444' }}>{edu.degree}</div>
+                        {edu.extraFields?.length > 0 && (
+                            <div style={{ fontSize: '0.8rem', display: 'flex', flexWrap: 'wrap', gap: '0.8rem', marginTop: '0.2rem', color: '#666' }}>
+                                {edu.extraFields.map((f, idx) => (f.label || f.value) && <span key={idx}><b>{f.label}:</b> {f.value}</span>)}
+                            </div>
+                        )}
+                    </div>
+                ))}
             </ExecutiveSection>
         );
         if (type === 'achievements') return (
@@ -624,6 +675,19 @@ export default function ResumeBuilder() {
                                             <InputField label="Project Title" value={p.title} onChange={(e) => updateItem('proj', i, 'title', e.target.value)} />
                                             <InputField label="Tech Stack" value={p.stack} onChange={(e) => updateItem('proj', i, 'stack', e.target.value)} />
                                             <InputField label="Duration" value={p.duration} onChange={(e) => updateItem('proj', i, 'duration', e.target.value)} />
+                                            
+                                            <div style={{ padding: '0.8rem', background: 'rgba(0,0,0,0.1)', borderRadius: '8px', marginBottom: '1rem' }}>
+                                                <div style={{ fontSize: '0.7rem', opacity: 0.5, marginBottom: '0.5rem', textTransform: 'uppercase' }}>Extra Fields (e.g. GitHub Link)</div>
+                                                {p.extraFields?.map((f, idx) => (
+                                                    <div key={idx} style={{ display: 'flex', gap: '0.4rem', marginBottom: '0.4rem' }}>
+                                                        <input placeholder="Label" value={f.label} onChange={(e) => updateExtraField('proj', i, idx, 'label', e.target.value)} style={{ ...inputStyle, padding: '0.4rem' }} />
+                                                        <input placeholder="Value" value={f.value} onChange={(e) => updateExtraField('proj', i, idx, 'value', e.target.value)} style={{ ...inputStyle, padding: '0.4rem' }} />
+                                                        <button onClick={() => removeExtraField('proj', i, idx)} style={{ color: '#ef4444', background: 'none' }}><Trash2 size={12} /></button>
+                                                    </div>
+                                                ))}
+                                                <button onClick={() => addExtraField('proj', i)} className="btn-outline btn-sm" style={{ padding: '2px 8px', fontSize: '0.65rem' }}>+ Field</button>
+                                            </div>
+
                                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
                                                 <label style={{ fontSize: '0.75rem', fontWeight: '600', opacity: 0.5, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Description</label>
                                                 <div className="format-toggle">
@@ -647,7 +711,23 @@ export default function ResumeBuilder() {
                                             <button onClick={() => removeItem('exp', i)} className="btn-delete"><Trash2 size={14} /></button>
                                             <InputField label="Company Name" value={exp.company} onChange={(e) => updateItem('exp', i, 'company', e.target.value)} />
                                             <InputField label="Role / Designation" value={exp.role} onChange={(e) => updateItem('exp', i, 'role', e.target.value)} />
-                                            <InputField label="Duration" value={exp.duration} onChange={(e) => updateItem('exp', i, 'duration', e.target.value)} />
+                                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.8rem' }}>
+                                                <InputField label="Duration" value={exp.duration} onChange={(e) => updateItem('exp', i, 'duration', e.target.value)} />
+                                                <InputField label="Location" value={exp.location} onChange={(e) => updateItem('exp', i, 'location', e.target.value)} />
+                                            </div>
+
+                                            <div style={{ padding: '0.8rem', background: 'rgba(0,0,0,0.1)', borderRadius: '8px', marginBottom: '1rem' }}>
+                                                <div style={{ fontSize: '0.7rem', opacity: 0.5, marginBottom: '0.5rem', textTransform: 'uppercase' }}>Extra Details (e.g. Supervisor)</div>
+                                                {exp.extraFields?.map((f, idx) => (
+                                                    <div key={idx} style={{ display: 'flex', gap: '0.4rem', marginBottom: '0.4rem' }}>
+                                                        <input placeholder="Label" value={f.label} onChange={(e) => updateExtraField('exp', i, idx, 'label', e.target.value)} style={{ ...inputStyle, padding: '0.4rem' }} />
+                                                        <input placeholder="Value" value={f.value} onChange={(e) => updateExtraField('exp', i, idx, 'value', e.target.value)} style={{ ...inputStyle, padding: '0.4rem' }} />
+                                                        <button onClick={() => removeExtraField('exp', i, idx)} style={{ color: '#ef4444', background: 'none' }}><Trash2 size={12} /></button>
+                                                    </div>
+                                                ))}
+                                                <button onClick={() => addExtraField('exp', i)} className="btn-outline btn-sm" style={{ padding: '2px 8px', fontSize: '0.65rem' }}>+ Field</button>
+                                            </div>
+
                                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
                                                 <label style={{ fontSize: '0.75rem', fontWeight: '600', opacity: 0.5, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Responsibilities</label>
                                                 <div className="format-toggle">
@@ -684,9 +764,22 @@ export default function ResumeBuilder() {
                                     </div>
                                     {education.map((edu, i) => (
                                         <div key={edu.id} className="edit-card">
+                                            <button onClick={() => removeItem('edu', i)} className="btn-delete"><Trash2 size={14} /></button>
                                             <InputField label="Institution" value={edu.school} onChange={(e) => updateItem('edu', i, 'school', e.target.value)} />
                                             <InputField label="Degree/Course" value={edu.degree} onChange={(e) => updateItem('edu', i, 'degree', e.target.value)} />
                                             <InputField label="Year of Completion" value={edu.year} onChange={(e) => updateItem('edu', i, 'year', e.target.value)} />
+
+                                            <div style={{ padding: '0.8rem', background: 'rgba(0,0,0,0.1)', borderRadius: '8px' }}>
+                                                <div style={{ fontSize: '0.7rem', opacity: 0.5, marginBottom: '0.5rem', textTransform: 'uppercase' }}>Extra Info (e.g. GPA, Honors)</div>
+                                                {edu.extraFields?.map((f, idx) => (
+                                                    <div key={idx} style={{ display: 'flex', gap: '0.4rem', marginBottom: '0.4rem' }}>
+                                                        <input placeholder="Label (GPA)" value={f.label} onChange={(e) => updateExtraField('edu', i, idx, 'label', e.target.value)} style={{ ...inputStyle, padding: '0.4rem' }} />
+                                                        <input placeholder="Value (3.9/4.0)" value={f.value} onChange={(e) => updateExtraField('edu', i, idx, 'value', e.target.value)} style={{ ...inputStyle, padding: '0.4rem' }} />
+                                                        <button onClick={() => removeExtraField('edu', i, idx)} style={{ color: '#ef4444', background: 'none' }}><Trash2 size={12} /></button>
+                                                    </div>
+                                                ))}
+                                                <button onClick={() => addExtraField('edu', i)} className="btn-outline btn-sm" style={{ padding: '2px 8px', fontSize: '0.65rem' }}>+ Field</button>
+                                            </div>
                                         </div>
                                     ))}
                                     <button onClick={() => addItem('edu')} className="btn-add-item"><Plus size={16} /> Add Education</button>
