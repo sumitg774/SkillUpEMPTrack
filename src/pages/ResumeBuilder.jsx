@@ -21,6 +21,16 @@ export default function ResumeBuilder() {
     const [rawResumeText, setRawResumeText] = useState('');
     const [saveSuccess, setSaveSuccess] = useState(false);
     const [aiFeedback, setAiFeedback] = useState(null);
+    const [themeColor, setThemeColor] = useState('#3b82f6');
+    const [fontFamily, setFontFamily] = useState("'Inter', sans-serif");
+    const [bulletStyle, setBulletStyle] = useState('•');
+    const [sectionGap, setSectionGap] = useState('1.2rem');
+    const [pageMargin, setPageMargin] = useState('15mm');
+    const [headerStyle, setHeaderStyle] = useState('standard');
+    const [atsMode, setAtsMode] = useState(false);
+    const [showIcons, setShowIcons] = useState(true);
+    const [jobDescription, setJobDescription] = useState('');
+    const [matchScore, setMatchScore] = useState(0);
     const resumeRef = useRef();
     const { user, saveResume, getResume } = useAuth();
 
@@ -50,10 +60,10 @@ export default function ResumeBuilder() {
         languages: 'LANGUAGES'
     });
     const [experience, setExperience] = useState([
-        { id: 1, company: 'Tech Solutions Inc.', role: 'Senior Developer', duration: '2021 - Present', desc: 'Leading the development of a flagship cloud platform, improving deployment efficiency by 40%.' }
+        { id: 1, company: 'Tech Solutions Inc.', role: 'Senior Developer', duration: '2021 - Present', desc: 'Leading the development of a flagship cloud platform, improving deployment efficiency by 40%.', isBulleted: true }
     ]);
     const [projects, setProjects] = useState([
-        { id: 1, title: 'Quantum E-commerce', duration: '2023', stack: 'React, Node.js, AWS', desc: 'Built a high-performance e-commerce engine handling 10k+ concurrent users.' }
+        { id: 1, title: 'Quantum E-commerce', duration: '2023', stack: 'React, Node.js, AWS', desc: 'Built a high-performance e-commerce engine handling 10k+ concurrent users.', isBulleted: true }
     ]);
     const [education, setEducation] = useState([
         { id: 1, school: 'Global Technical University', degree: 'B.S. in Computer Science', year: '2018' }
@@ -90,8 +100,15 @@ export default function ResumeBuilder() {
             setDayLife(savedData.dayLife || []);
             setCustomSections(savedData.customSections || []);
             if (savedData.sectionTitles) setSectionTitles(savedData.sectionTitles);
-            if (savedData.sectionOrder) setSectionOrder(savedData.sectionOrder);
             if (savedData.template) setTemplate(savedData.template);
+            if (savedData.themeColor) setThemeColor(savedData.themeColor);
+            if (savedData.fontFamily) setFontFamily(savedData.fontFamily);
+            if (savedData.bulletStyle) setBulletStyle(savedData.bulletStyle);
+            if (savedData.sectionGap) setSectionGap(savedData.sectionGap);
+            if (savedData.pageMargin) setPageMargin(savedData.pageMargin);
+            if (savedData.headerStyle) setHeaderStyle(savedData.headerStyle);
+            if (savedData.atsMode !== undefined) setAtsMode(savedData.atsMode);
+            if (savedData.showIcons !== undefined) setShowIcons(savedData.showIcons);
         }
     }, []);
 
@@ -106,8 +123,8 @@ export default function ResumeBuilder() {
     const handlePersonalInfo = (e) => setPersonalInfo({ ...personalInfo, [e.target.name]: e.target.value });
 
     const addItem = (type) => {
-        if (type === 'exp') setExperience([...experience, { id: Date.now(), company: '', role: '', duration: '', desc: '' }]);
-        if (type === 'proj') setProjects([...projects, { id: Date.now(), title: '', duration: '', stack: '', desc: '' }]);
+        if (type === 'exp') setExperience([...experience, { id: Date.now(), company: '', role: '', duration: '', desc: '', isBulleted: true }]);
+        if (type === 'proj') setProjects([...projects, { id: Date.now(), title: '', duration: '', stack: '', desc: '', isBulleted: true }]);
         if (type === 'edu') setEducation([...education, { id: Date.now(), school: '', degree: '', year: '' }]);
         if (type === 'skill') setSkills([...skills, { name: '', level: 50 }]);
         if (type === 'ach') setAchievements([...achievements, { id: Date.now(), title: '' }]);
@@ -115,7 +132,7 @@ export default function ResumeBuilder() {
         if (type === 'link') setPersonalInfo({ ...personalInfo, customLinks: [...personalInfo.customLinks, { type: 'link', url: '' }] });
         if (type === 'custom_sec') {
             const newId = `custom_${Date.now()}`;
-            setCustomSections([...customSections, { id: newId, title: 'New Section', content: '' }]);
+            setCustomSections([...customSections, { id: newId, title: 'New Section', content: '', isBulleted: false }]);
             setSectionOrder([...sectionOrder, newId]);
         }
     };
@@ -170,7 +187,12 @@ export default function ResumeBuilder() {
 
     const handleSave = () => {
         setIsSaving(true);
-        saveResume({ personalInfo, experience, education, skills, achievements, projects, languages, dayLife, sectionOrder, template, customSections, sectionTitles });
+        saveResume({
+            personalInfo, experience, education, skills, achievements, projects, languages,
+            dayLife, sectionOrder, template, customSections, sectionTitles,
+            themeColor, fontFamily, bulletStyle, sectionGap,
+            pageMargin, headerStyle, atsMode, showIcons
+        });
         setTimeout(() => {
             setIsSaving(false);
             setSaveSuccess(true);
@@ -179,7 +201,11 @@ export default function ResumeBuilder() {
     };
 
     const handleExportJSON = () => {
-        const data = { personalInfo, experience, education, skills, achievements, projects, languages, dayLife, sectionOrder, template, customSections, sectionTitles };
+        const data = {
+            personalInfo, experience, education, skills, achievements, projects, languages,
+            dayLife, sectionOrder, template, customSections, sectionTitles,
+            themeColor, fontFamily, bulletStyle, sectionGap, pageMargin, headerStyle, atsMode, showIcons
+        };
         const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -206,12 +232,30 @@ export default function ResumeBuilder() {
                 if (data.sectionOrder) setSectionOrder(data.sectionOrder);
                 if (data.customSections) setCustomSections(data.customSections);
                 if (data.template) setTemplate(data.template);
+                if (data.themeColor) setThemeColor(data.themeColor);
+                if (data.fontFamily) setFontFamily(data.fontFamily);
+                if (data.bulletStyle) setBulletStyle(data.bulletStyle);
+                if (data.sectionGap) setSectionGap(data.sectionGap);
+                if (data.pageMargin) setPageMargin(data.pageMargin);
+                if (data.headerStyle) setHeaderStyle(data.headerStyle);
+                if (data.atsMode !== undefined) setAtsMode(data.atsMode);
+                if (data.showIcons !== undefined) setShowIcons(data.showIcons);
                 setImportModal(false);
             } catch (err) {
                 alert("Invalid JSON file");
             }
         };
         reader.readAsText(file);
+    };
+
+    const calculateMatch = () => {
+        if (!jobDescription.trim()) return setMatchScore(0);
+        const keywords = jobDescription.toLowerCase().match(/\b(\w+)\b/g);
+        const resumeContent = JSON.stringify({ personalInfo, experience, projects, skills }).toLowerCase();
+        let matchCount = 0;
+        const uniqueKeywords = [...new Set(keywords)].filter(w => w.length > 3);
+        uniqueKeywords.forEach(word => { if (resumeContent.includes(word)) matchCount++; });
+        setMatchScore(Math.round((matchCount / uniqueKeywords.length) * 100));
     };
 
     const handleAIImport = async () => {
@@ -258,28 +302,54 @@ export default function ResumeBuilder() {
         }
     };
 
-    const renderHeaderLinks = (color = '#444') => (
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.8rem', marginTop: '0.4rem', fontSize: '0.8rem', color }}>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}><Mail size={12} /> {personalInfo.email}</span>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}><Phone size={12} /> {personalInfo.phone}</span>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}><MapPin size={12} /> {personalInfo.location}</span>
-            {personalInfo.customLinks.map((link, idx) => (
-                <span key={idx} style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-                    {getLinkIcon(link.type)} {link.url}
-                </span>
-            ))}
-        </div>
-    );
+    const renderDescription = (text, isBulleted, style = {}) => {
+        if (!text) return null;
+        if (isBulleted) {
+            const points = text.split('\n').filter(p => p.trim() !== '');
+            return (
+                <ul style={{ paddingLeft: '1.2rem', marginTop: '0.4rem', marginBottom: 0, fontSize: 'inherit', listStyleType: 'none', ...style }}>
+                    {points.map((p, i) => (
+                        <li key={i} style={{ marginBottom: '0.2rem', lineHeight: '1.4', display: 'flex', gap: '0.5rem' }}>
+                            {showIcons && <span style={{ color: atsMode ? '#1a1a1a' : themeColor, flexShrink: 0 }}>{bulletStyle}</span>}
+                            {!showIcons && <span style={{ flexShrink: 0 }}>•</span>}
+                            <span>{p.trim().replace(/^[-•*]\s*/, '')}</span>
+                        </li>
+                    ))}
+                </ul>
+            );
+        }
+        return <div style={{ whiteSpace: 'pre-wrap', ...style }}>{text}</div>;
+    };
+
+    const renderHeaderLinks = (color = '#444') => {
+        const iconSize = 12;
+        const links = [
+            { icon: <Mail size={iconSize} />, val: personalInfo.email, show: true },
+            { icon: <Phone size={iconSize} />, val: personalInfo.phone, show: true },
+            { icon: <MapPin size={iconSize} />, val: personalInfo.location, show: true },
+            ...personalInfo.customLinks.map(l => ({ icon: getLinkIcon(l.type), val: l.url, show: true }))
+        ];
+
+        return (
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', marginTop: '0.4rem', fontSize: '0.8rem', color, justifyContent: headerStyle === 'centered' ? 'center' : 'flex-start' }}>
+                {links.map((link, idx) => (
+                    <span key={idx} style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                        {(showIcons && !atsMode) && link.icon} {link.val}
+                    </span>
+                ))}
+            </div>
+        );
+    };
 
     const renderSection = (type, theme = 'elite') => {
-        const borderStyle = theme === 'elite' ? '1.5px solid #1a1a1a' : '2px solid #3b82f6';
+        const borderStyle = theme === 'elite' ? `1.5px solid ${atsMode ? '#1a1a1a' : themeColor}` : `2px solid ${atsMode ? '#1a1a1a' : themeColor}`;
         if (type === 'projects') return (
             <ExecutiveSection title={sectionTitles.projects.toUpperCase()} border={borderStyle}>
                 {projects.map(p => (
-                    <div key={p.id} style={{ marginBottom: '1rem' }}>
+                    <div key={p.id} style={{ marginBottom: sectionGap }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: '700' }}><span>{p.title}</span><span style={{ color: '#666', fontSize: '0.85rem' }}>{p.duration}</span></div>
-                        <div style={{ fontSize: '0.85rem', color: '#3b82f6', fontWeight: '600', marginBottom: '0.2rem' }}>{p.stack}</div>
-                        <p style={{ fontSize: '0.9rem', margin: 0, lineHeight: '1.4' }}>{p.desc}</p>
+                        <div style={{ fontSize: '0.85rem', color: atsMode ? '#000' : themeColor, fontWeight: '600', marginBottom: '0.2rem' }}>{p.stack}</div>
+                        {renderDescription(p.desc, p.isBulleted, { fontSize: '0.9rem', color: '#333' })}
                     </div>
                 ))}
             </ExecutiveSection>
@@ -287,10 +357,10 @@ export default function ResumeBuilder() {
         if (type === 'experience' && experience.length > 0) return (
             <ExecutiveSection title={sectionTitles.experience.toUpperCase()} border={borderStyle}>
                 {experience.map(exp => (
-                    <div key={exp.id} style={{ marginBottom: '1rem' }}>
+                    <div key={exp.id} style={{ marginBottom: sectionGap }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: '700' }}><span>{exp.company}</span><span style={{ color: '#666', fontSize: '0.85rem' }}>{exp.duration}</span></div>
                         <div style={{ fontWeight: '600', color: '#444', fontSize: '0.9rem' }}>{exp.role}</div>
-                        <p style={{ fontSize: '0.9rem', marginTop: '0.2rem', color: '#333' }}>{exp.desc}</p>
+                        {renderDescription(exp.desc, exp.isBulleted, { fontSize: '0.9rem', marginTop: '0.2rem', color: '#333' })}
                     </div>
                 ))}
             </ExecutiveSection>
@@ -298,7 +368,7 @@ export default function ResumeBuilder() {
         if (type === 'skills') return (
             <ExecutiveSection title={sectionTitles.skills.toUpperCase()} border={borderStyle}>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
-                    {skills.map(s => <span key={s.name} style={{ background: '#f3f4f6', padding: '0.2rem 0.5rem', borderRadius: '4px', fontSize: '0.85rem' }}>{s.name}</span>)}
+                    {skills.map(s => <span key={s.name} style={{ border: atsMode ? '1px solid #ddd' : `1px solid ${themeColor}20`, background: atsMode ? 'none' : `${themeColor}08`, padding: '0.2rem 0.5rem', borderRadius: '4px', fontSize: '0.85rem', color: '#333' }}>{s.name}</span>)}
                 </div>
             </ExecutiveSection>
         );
@@ -309,7 +379,7 @@ export default function ResumeBuilder() {
         );
         if (type === 'achievements') return (
             <ExecutiveSection title={sectionTitles.achievements.toUpperCase()} border={borderStyle}>
-                {achievements.map(ach => <div key={ach.id} style={{ display: 'flex', gap: '0.4rem', alignItems: 'center', marginBottom: '0.2rem' }}><Award size={12} color="#3b82f6" /> <span style={{ fontSize: '0.9rem' }}>{ach.title}</span></div>)}
+                {achievements.map(ach => <div key={ach.id} style={{ display: 'flex', gap: '0.4rem', alignItems: 'center', marginBottom: '0.2rem' }}>{(showIcons && !atsMode) && <Award size={12} color={themeColor} />} <span style={{ fontSize: '0.9rem' }}>{ach.title}</span></div>)}
             </ExecutiveSection>
         );
         if (type === 'languages') return (
@@ -321,9 +391,11 @@ export default function ResumeBuilder() {
             const sec = customSections.find(s => s.id === type);
             if (!sec) return null;
             return (
-                <ExecutiveSection title={sec.title.toUpperCase()} border={borderStyle}>
-                    <p style={{ fontSize: '0.9rem', margin: 0, lineHeight: '1.4', whiteSpace: 'pre-wrap' }}>{sec.content}</p>
-                </ExecutiveSection>
+                <div style={{ marginBottom: sectionGap }}>
+                    <ExecutiveSection title={sec.title.toUpperCase()} border={borderStyle}>
+                        {renderDescription(sec.content, sec.isBulleted, { fontSize: '0.9rem', color: '#333' })}
+                    </ExecutiveSection>
+                </div>
             );
         }
         return null;
@@ -431,7 +503,108 @@ export default function ResumeBuilder() {
                         ))}
                         <button onClick={() => addItem('link')} className="btn-add-item"><Plus size={14} /> Add Social/Link</button>
 
-                        <InputField label="Professional Summary" name="summary" value={personalInfo.summary} onChange={handlePersonalInfo} isTextarea />
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                            <label style={{ fontSize: '0.75rem', fontWeight: '600', opacity: 0.5, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Professional Summary</label>
+                            <div className="format-toggle">
+                                <button onClick={() => setPersonalInfo({ ...personalInfo, isSummaryBulleted: false })} className={`toggle-btn ${!personalInfo.isSummaryBulleted ? 'active' : ''}`}>Simple</button>
+                                <button onClick={() => setPersonalInfo({ ...personalInfo, isSummaryBulleted: true })} className={`toggle-btn ${personalInfo.isSummaryBulleted ? 'active' : ''}`}>Points</button>
+                            </div>
+                        </div>
+                        <InputField value={personalInfo.summary} onChange={handlePersonalInfo} name="summary" isTextarea placeholder={personalInfo.isSummaryBulleted ? "Enter each point on a new line..." : "Briefly describe your professional background..."} />
+                    </Section>
+
+                    <Section title="Theme & Style" icon={<Sparkles size={18} />}>
+                        <div style={{ marginBottom: '1.5rem' }}>
+                            <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: '600', opacity: 0.5, marginBottom: '0.8rem', textTransform: 'uppercase' }}>Accent Color</label>
+                            <div style={{ display: 'flex', gap: '0.8rem', flexWrap: 'wrap' }}>
+                                {['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#1a1a1a'].map(color => (
+                                    <button
+                                        key={color}
+                                        onClick={() => setThemeColor(color)}
+                                        style={{ width: '28px', height: '28px', borderRadius: '50%', background: color, border: themeColor === color ? '2px solid white' : 'none', cursor: 'pointer', outline: themeColor === color ? '2px solid #3b82f6' : 'none' }}
+                                    />
+                                ))}
+                                <input type="color" value={themeColor} onChange={(e) => setThemeColor(e.target.value)} style={{ width: '28px', height: '28px', border: 'none', background: 'none', cursor: 'pointer' }} />
+                            </div>
+                        </div>
+
+                        <div style={{ marginBottom: '1.5rem' }}>
+                            <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: '600', opacity: 0.5, marginBottom: '0.8rem', textTransform: 'uppercase' }}>Body Font</label>
+                            <select value={fontFamily} onChange={(e) => setFontFamily(e.target.value)} style={inputStyle}>
+                                <option value="'Inter', sans-serif">Modern (Inter)</option>
+                                <option value="'Roboto', sans-serif">Clean (Roboto)</option>
+                                <option value="'Playfair Display', serif">Elegant (Playfair)</option>
+                                <option value="'Merriweather', serif">Bookish (Merriweather)</option>
+                                <option value="'Fira Code', monospace">Tech (Fira Code)</option>
+                            </select>
+                        </div>
+
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                            <button onClick={() => setShowIcons(!showIcons)} className={`btn-outline btn-sm ${!showIcons ? 'active' : ''}`} style={{ width: '100%', borderColor: !showIcons ? themeColor : 'rgba(255,255,255,0.1)' }}>
+                                {showIcons ? <CheckCircle size={14} /> : <X size={14} />} Show Icons
+                            </button>
+                            <button onClick={() => setBulletStyle(bulletStyle === '•' ? '✓' : bulletStyle === '✓' ? '→' : bulletStyle === '→' ? '★' : '•')} className="btn-outline btn-sm" style={{ width: '100%' }}>
+                                <span style={{ color: themeColor, marginRight: '4px' }}>{bulletStyle}</span> Cycle Bullet
+                            </button>
+                        </div>
+                    </Section>
+
+                    <Section title="ATS & Power Tools" icon={<Rocket size={18} />}>
+                        <div style={{ background: 'rgba(59, 130, 246, 0.1)', padding: '1rem', borderRadius: '12px', marginBottom: '1.5rem', border: '1px solid rgba(59, 130, 246, 0.2)' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                                <h4 style={{ margin: 0, fontSize: '0.9rem', color: '#3b82f6' }}>ATS Safety Mode</h4>
+                                <div style={{ position: 'relative', width: '40px', height: '20px', background: atsMode ? '#3b82f6' : '#333', borderRadius: '10px', cursor: 'pointer', transition: '0.3s' }} onClick={() => setAtsMode(!atsMode)}>
+                                    <div style={{ position: 'absolute', top: '2px', left: atsMode ? '22px' : '2px', width: '16px', height: '16px', background: 'white', borderRadius: '50%', transition: '0.3s' }} />
+                                </div>
+                            </div>
+                            <p style={{ fontSize: '0.75rem', color: '#aaa', margin: 0 }}>Ensures standard fonts, no complex visuals, and high parsing compatibility.</p>
+                        </div>
+
+                        <div>
+                            <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: '600', opacity: 0.5, marginBottom: '0.8rem', textTransform: 'uppercase' }}>Job Description Matcher</label>
+                            <textarea
+                                value={jobDescription}
+                                onChange={(e) => setJobDescription(e.target.value)}
+                                placeholder="Paste Job Description here to check keywords..."
+                                style={{ ...inputStyle, height: '80px', fontSize: '0.8rem', marginBottom: '1rem' }}
+                            />
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <button onClick={calculateMatch} className="btn-primary btn-sm" style={{ height: '32px' }}>Check Match</button>
+                                <div style={{ textAlign: 'right' }}>
+                                    <div style={{ fontSize: '1.2rem', fontWeight: '900', color: matchScore > 70 ? '#10b981' : matchScore > 40 ? '#f59e0b' : '#ef4444' }}>{matchScore}%</div>
+                                    <div style={{ fontSize: '0.6rem', opacity: 0.6 }}>RESUME MATCH</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style={{ marginTop: '1.5rem', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '1rem' }}>
+                            <h4 style={{ fontSize: '0.75rem', opacity: 0.5, textTransform: 'uppercase', marginBottom: '0.8rem' }}>ATS Audit Checklist</h4>
+                            <div style={{ fontSize: '0.8rem', display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+                                <div style={{ display: 'flex', gap: '0.5rem', color: personalInfo.email ? '#10b981' : '#ef4444' }}><CheckCircle size={14} /> Contact Details Present</div>
+                                <div style={{ display: 'flex', gap: '0.5rem', color: skills.length > 5 ? '#10b981' : '#f59e0b' }}><CheckCircle size={14} /> Skills Optimization ({skills.length})</div>
+                                <div style={{ display: 'flex', gap: '0.5rem', color: atsMode ? '#10b981' : '#f59e0b' }}><Sparkles size={14} /> {atsMode ? 'ATS Safe Mode Active' : 'Scan Safety: Medium'}</div>
+                            </div>
+                        </div>
+                    </Section>
+
+                    <Section title="Advanced Layout" icon={<Layout size={18} />}>
+                        <div style={{ marginBottom: '1.5rem' }}>
+                            <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: '600', opacity: 0.5, marginBottom: '0.8rem', textTransform: 'uppercase' }}>Header Variant</label>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
+                                <button onClick={() => setHeaderStyle('standard')} className={`btn-outline btn-sm ${headerStyle === 'standard' ? 'active' : ''}`}>Left Aligned</button>
+                                <button onClick={() => setHeaderStyle('centered')} className={`btn-outline btn-sm ${headerStyle === 'centered' ? 'active' : ''}`}>Centered</button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: '600', opacity: 0.5, marginBottom: '0.8rem', textTransform: 'uppercase' }}>Page Margins</label>
+                            <select value={pageMargin} onChange={(e) => setPageMargin(e.target.value)} style={inputStyle}>
+                                <option value="5mm">Zero (5mm)</option>
+                                <option value="10mm">Tight (10mm)</option>
+                                <option value="15mm">Standard (15mm)</option>
+                                <option value="25mm">Wide (25mm)</option>
+                            </select>
+                        </div>
                     </Section>
 
                     {sectionOrder.map((sec, idx) => (
@@ -451,7 +624,14 @@ export default function ResumeBuilder() {
                                             <InputField label="Project Title" value={p.title} onChange={(e) => updateItem('proj', i, 'title', e.target.value)} />
                                             <InputField label="Tech Stack" value={p.stack} onChange={(e) => updateItem('proj', i, 'stack', e.target.value)} />
                                             <InputField label="Duration" value={p.duration} onChange={(e) => updateItem('proj', i, 'duration', e.target.value)} />
-                                            <InputField label="Brief Description" value={p.desc} onChange={(e) => updateItem('proj', i, 'desc', e.target.value)} isTextarea />
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                                                <label style={{ fontSize: '0.75rem', fontWeight: '600', opacity: 0.5, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Description</label>
+                                                <div className="format-toggle">
+                                                    <button onClick={() => updateItem('proj', i, 'isBulleted', false)} className={`toggle-btn ${!p.isBulleted ? 'active' : ''}`}>Simple</button>
+                                                    <button onClick={() => updateItem('proj', i, 'isBulleted', true)} className={`toggle-btn ${p.isBulleted ? 'active' : ''}`}>Points</button>
+                                                </div>
+                                            </div>
+                                            <InputField value={p.desc} onChange={(e) => updateItem('proj', i, 'desc', e.target.value)} isTextarea placeholder={p.isBulleted ? "Enter each point on a new line..." : "Enter a simple paragraph..."} />
                                         </div>
                                     ))}
                                     <button onClick={() => addItem('proj')} className="btn-add-item"><Plus size={16} /> Add New Project</button>
@@ -468,7 +648,14 @@ export default function ResumeBuilder() {
                                             <InputField label="Company Name" value={exp.company} onChange={(e) => updateItem('exp', i, 'company', e.target.value)} />
                                             <InputField label="Role / Designation" value={exp.role} onChange={(e) => updateItem('exp', i, 'role', e.target.value)} />
                                             <InputField label="Duration" value={exp.duration} onChange={(e) => updateItem('exp', i, 'duration', e.target.value)} />
-                                            <InputField label="Key Responsibilities" value={exp.desc} onChange={(e) => updateItem('exp', i, 'desc', e.target.value)} isTextarea />
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                                                <label style={{ fontSize: '0.75rem', fontWeight: '600', opacity: 0.5, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Responsibilities</label>
+                                                <div className="format-toggle">
+                                                    <button onClick={() => updateItem('exp', i, 'isBulleted', false)} className={`toggle-btn ${!exp.isBulleted ? 'active' : ''}`}>Simple</button>
+                                                    <button onClick={() => updateItem('exp', i, 'isBulleted', true)} className={`toggle-btn ${exp.isBulleted ? 'active' : ''}`}>Points</button>
+                                                </div>
+                                            </div>
+                                            <InputField value={exp.desc} onChange={(e) => updateItem('exp', i, 'desc', e.target.value)} isTextarea placeholder={exp.isBulleted ? "Enter each responsibility on a new line..." : "Enter a simple paragraph..."} />
                                         </div>
                                     ))}
                                     <button onClick={() => addItem('exp')} className="btn-add-item"><Plus size={16} /> Add Experience</button>
@@ -539,7 +726,14 @@ export default function ResumeBuilder() {
                                     <div className="edit-card">
                                         <button onClick={() => removeItem(sec)} className="btn-delete"><Trash2 size={14} /></button>
                                         <InputField label="Section Name" value={customSections.find(s => s.id === sec)?.title || ''} onChange={(e) => updateItem(sec, 0, 'title', e.target.value)} />
-                                        <InputField label="Section Content" value={customSections.find(s => s.id === sec)?.content || ''} onChange={(e) => updateItem(sec, 0, 'content', e.target.value)} isTextarea />
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                                            <label style={{ fontSize: '0.75rem', fontWeight: '600', opacity: 0.5, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Content</label>
+                                            <div className="format-toggle">
+                                                <button onClick={() => updateItem(sec, 0, 'isBulleted', false)} className={`toggle-btn ${!customSections.find(s => s.id === sec)?.isBulleted ? 'active' : ''}`}>Simple</button>
+                                                <button onClick={() => updateItem(sec, 0, 'isBulleted', true)} className={`toggle-btn ${customSections.find(s => s.id === sec)?.isBulleted ? 'active' : ''}`}>Points</button>
+                                            </div>
+                                        </div>
+                                        <InputField value={customSections.find(s => s.id === sec)?.content || ''} onChange={(e) => updateItem(sec, 0, 'content', e.target.value)} isTextarea placeholder={customSections.find(s => s.id === sec)?.isBulleted ? "Enter each point on a new line..." : "Enter a simple paragraph..."} />
                                     </div>
                                 </Section>
                             )}
@@ -551,64 +745,75 @@ export default function ResumeBuilder() {
                 </div>
 
                 <div className="preview-container">
-                    <div ref={resumeRef} className={`resume-paper template-${template}`}>
+                    <div ref={resumeRef} className={`resume-paper template-${template}`} style={{ fontFamily: atsMode ? "'Inter', sans-serif" : fontFamily, padding: pageMargin }}>
 
                         {template === 'elite' && (
                             <>
-                                <div style={{ borderBottom: '3px solid #1a1a1a', paddingBottom: '1rem', marginBottom: '1.2rem' }}>
+                                <div style={{ borderBottom: `3px solid ${atsMode ? '#1a1a1a' : themeColor}`, paddingBottom: '1rem', marginBottom: '1.2rem', textAlign: headerStyle === 'centered' ? 'center' : 'left' }}>
                                     <h1 style={{ fontSize: '2.5rem', fontWeight: '800', margin: 0, color: '#1a1a1a', letterSpacing: '-0.02em' }}>{personalInfo.fullName}</h1>
-                                    <div style={{ color: '#3b82f6', fontWeight: '700', fontSize: '1.1rem', marginTop: '2px' }}>{personalInfo.role}</div>
-                                    {renderHeaderLinks()}
+                                    <div style={{ color: atsMode ? '#000' : themeColor, fontWeight: '700', fontSize: '1.1rem', marginTop: '2px' }}>{personalInfo.role}</div>
+                                    {renderHeaderLinks(atsMode ? '#000' : '#444')}
                                 </div>
-                                <div style={{ marginBottom: '1.5rem', fontSize: '0.92rem', lineHeight: '1.5', color: '#333' }}>{personalInfo.summary}</div>
-                                {sectionOrder.map(type => <div key={type}>{renderSection(type)}</div>)}
+                                {renderDescription(personalInfo.summary, personalInfo.isSummaryBulleted, { marginBottom: '1.5rem', fontSize: '0.92rem', lineHeight: '1.5', color: '#333' })}
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: sectionGap }}>
+                                    {sectionOrder.map(type => <div key={type}>{renderSection(type)}</div>)}
+                                </div>
                             </>
                         )}
 
                         {template === 'pro_executive' && (
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
-                                <div style={{ borderBottom: '5px solid #1a1a1a', paddingBottom: '1.5rem', marginBottom: '2rem' }}>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0', textAlign: headerStyle === 'centered' ? 'center' : 'left' }}>
+                                <div style={{ borderBottom: `5px solid ${atsMode ? '#1a1a1a' : themeColor}`, paddingBottom: '1.5rem', marginBottom: '2rem' }}>
                                     <h1 style={{ fontSize: '3rem', fontWeight: '900', color: '#1a1a1a', margin: 0, textTransform: 'uppercase' }}>{personalInfo.fullName}</h1>
-                                    <div style={{ background: '#1a1a1a', color: 'white', display: 'inline-block', padding: '0.3rem 0.8rem', fontWeight: '700', marginTop: '0.5rem', borderRadius: '4px' }}>{personalInfo.role}</div>
-                                    <div style={{ marginTop: '1rem', borderTop: '1px solid #eee', paddingTop: '1rem' }}>{renderHeaderLinks()}</div>
+                                    <div style={{ background: atsMode ? '#1a1a1a' : themeColor, color: 'white', display: 'inline-block', padding: '0.3rem 0.8rem', fontWeight: '700', marginTop: '0.5rem', borderRadius: '4px' }}>{personalInfo.role}</div>
+                                    <div style={{ marginTop: '1rem', borderTop: '1px solid #eee', paddingTop: '1rem' }}>{renderHeaderLinks(atsMode ? '#000' : '#444')}</div>
                                 </div>
                                 <div style={{ marginBottom: '2rem' }}>
                                     <h3 style={{ fontSize: '1rem', fontWeight: '900', marginBottom: '0.8rem', color: '#1a1a1a', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Professional Profile</h3>
-                                    <p style={{ fontSize: '0.95rem', lineHeight: '1.6', color: '#333' }}>{personalInfo.summary}</p>
+                                    {renderDescription(personalInfo.summary, personalInfo.isSummaryBulleted, { fontSize: '1.1rem', lineHeight: '1.6', color: '#333' })}
                                 </div>
-                                {sectionOrder.map(type => <div key={type} style={{ marginBottom: '2rem' }}>{renderSection(type, 'elite')}</div>)}
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: sectionGap }}>
+                                    {sectionOrder.map(type => <div key={type}>{renderSection(type, 'elite')}</div>)}
+                                </div>
                             </div>
                         )}
 
                         {template === 'modern_compact' && (
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 240px', gap: '15mm', margin: '-5mm', padding: '5mm', minHeight: '100%' }}>
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-                                    <div style={{ borderBottom: '3px solid #3b82f6', paddingBottom: '1rem' }}>
+                            <div style={{ display: 'grid', gridTemplateColumns: atsMode ? '1fr' : '1fr 240px', gap: '15mm', margin: atsMode ? '0' : '-5mm', padding: atsMode ? '0' : '5mm', minHeight: '100%', border: atsMode ? 'none' : 'none' }}>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: sectionGap }}>
+                                    <div style={{ borderBottom: `3px solid ${atsMode ? '#1a1a1a' : themeColor}`, paddingBottom: '1rem', textAlign: headerStyle === 'centered' ? 'center' : 'left' }}>
                                         <h1 style={{ fontSize: '2.5rem', fontWeight: '800', color: '#1a1a1a', margin: 0 }}>{personalInfo.fullName}</h1>
-                                        <div style={{ color: '#3b82f6', fontWeight: '700', fontSize: '1.1rem' }}>{personalInfo.role}</div>
-                                        <div style={{ marginTop: '0.8rem' }}>{renderHeaderLinks()}</div>
+                                        <div style={{ color: atsMode ? '#000' : themeColor, fontWeight: '700', fontSize: '1.1rem' }}>{personalInfo.role}</div>
+                                        <div style={{ marginTop: '0.8rem' }}>{renderHeaderLinks(atsMode ? '#000' : '#444')}</div>
                                     </div>
-                                    <div style={{ fontSize: '0.92rem', lineHeight: '1.6' }}>{personalInfo.summary}</div>
+                                    <div style={{ fontSize: '0.92rem', lineHeight: '1.6' }}>{renderDescription(personalInfo.summary, personalInfo.isSummaryBulleted)}</div>
                                     {sectionOrder.filter(s => ['projects', 'experience'].includes(s)).map(type => <div key={type}>{renderSection(type)}</div>)}
+                                    {atsMode && sectionOrder.filter(s => !['projects', 'experience'].includes(s)).map(type => <div key={type}>{renderSection(type)}</div>)}
                                 </div>
-                                <div style={{ background: '#f8fafc', padding: '8mm', borderRadius: '15px', borderLeft: '1px solid #e2e8f0' }}>
-                                    {sectionOrder.filter(s => !['projects', 'experience'].includes(s)).map(type => <div key={type} style={{ marginBottom: '1.5rem' }}>{renderSection(type)}</div>)}
-                                </div>
+                                {!atsMode && (
+                                    <div style={{ background: `${themeColor}05`, padding: '8mm', borderRadius: '15px', borderLeft: `1px solid ${themeColor}20` }}>
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: sectionGap }}>
+                                            {sectionOrder.filter(s => !['projects', 'experience'].includes(s)).map(type => <div key={type}>{renderSection(type)}</div>)}
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         )}
 
                         {template === 'minimal_bold' && (
-                            <div style={{ padding: '5mm' }}>
-                                <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+                            <div style={{ padding: atsMode ? '0' : '5mm' }}>
+                                <div style={{ textAlign: headerStyle === 'centered' ? 'center' : 'left', marginBottom: '3rem' }}>
                                     <h1 style={{ fontSize: '3.5rem', fontWeight: '900', color: '#1a1a1a', margin: 0, letterSpacing: '-0.04em' }}>{personalInfo.fullName}</h1>
                                     <p style={{ fontSize: '1.2rem', color: '#666', fontWeight: '600', margin: '0.5rem 0 1.5rem' }}>{personalInfo.role}</p>
-                                    <div style={{ display: 'flex', justifyContent: 'center', gap: '1.5rem', flexWrap: 'wrap' }}>{renderHeaderLinks()}</div>
+                                    <div style={{ display: 'flex', justifyContent: headerStyle === 'centered' ? 'center' : 'flex-start', gap: '1.5rem', flexWrap: 'wrap' }}>{renderHeaderLinks(atsMode ? '#000' : '#444')}</div>
                                 </div>
-                                <div style={{ maxWidth: '850px', margin: '0 auto' }}>
-                                    <div style={{ borderLeft: '4px solid #1a1a1a', paddingLeft: '2rem', marginBottom: '3rem' }}>
-                                        <p style={{ fontSize: '1.1rem', lineHeight: '1.6', color: '#333', fontStyle: 'italic' }}>"{personalInfo.summary}"</p>
+                                <div style={{ maxWidth: atsMode ? '100%' : '850px', margin: headerStyle === 'centered' ? '0 auto' : '0' }}>
+                                    <div style={{ borderLeft: `4px solid ${atsMode ? '#1a1a1a' : themeColor}`, paddingLeft: '2rem', marginBottom: '3rem' }}>
+                                        {renderDescription(personalInfo.summary, personalInfo.isSummaryBulleted, { fontSize: '1.1rem', lineHeight: '1.6', color: '#333', fontStyle: atsMode ? 'normal' : 'italic' })}
                                     </div>
-                                    {sectionOrder.map(type => <div key={type} style={{ marginBottom: '2.5rem' }}>{renderSection(type, 'elite')}</div>)}
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: sectionGap }}>
+                                        {sectionOrder.map(type => <div key={type}>{renderSection(type, 'elite')}</div>)}
+                                    </div>
                                 </div>
                             </div>
                         )}
@@ -683,6 +888,14 @@ export default function ResumeBuilder() {
                 .btn-delete:hover { opacity: 1; transform: scale(1.1); }
                 .btn-move { background: rgba(255,255,255,0.05); color: white; border: none; border-radius: 4px; cursor: pointer; padding: 4px; display: flex; align-items: center; transition: 0.2s; }
                 .btn-move:hover { background: rgba(255,255,255,0.15); color: var(--color-secondary); }
+
+                .format-toggle { display: flex; background: rgba(255,255,255,0.05); border-radius: 6px; padding: 2px; }
+                .toggle-btn { padding: 0.2rem 0.6rem; font-size: 0.7rem; border: none; background: none; color: #666; cursor: pointer; border-radius: 4px; transition: 0.2s; font-weight: 600; }
+                .toggle-btn.active { background: var(--color-secondary); color: black; }
+                .toggle-btn:not(.active):hover { color: white; background: rgba(255,255,255,0.05); }
+
+                .ats-audit-card { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 1rem; margin-top: 1rem; }
+                .btn-outline.active { background: var(--color-secondary); color: black; border-color: var(--color-secondary); }
 
                 .btn-custom-add { 
                     border-style: solid; background: var(--color-secondary); color: black; height: 60px; font-size: 1.1rem; margin-top: 1rem;
@@ -786,12 +999,12 @@ function ResumeSection({ title, children, themeColor }) {
     );
 }
 
-function InputField({ label, name, value, onChange, isTextarea = false }) {
+function InputField({ label, name, value, onChange, isTextarea = false, placeholder = "" }) {
     const Component = isTextarea ? 'textarea' : 'input';
     return (
         <div style={{ marginBottom: '1rem' }}>
-            <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: '600', opacity: 0.5, marginBottom: '0.4rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{label}</label>
-            <Component name={name} value={value} onChange={onChange} style={{ ...inputStyle, minHeight: isTextarea ? '100px' : 'auto', lineHeight: '1.5' }} />
+            {label && <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: '600', opacity: 0.5, marginBottom: '0.4rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{label}</label>}
+            <Component name={name} value={value} onChange={onChange} placeholder={placeholder} style={{ ...inputStyle, minHeight: isTextarea ? '100px' : 'auto', lineHeight: '1.5' }} />
         </div>
     );
 }
