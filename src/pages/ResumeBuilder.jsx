@@ -11,6 +11,9 @@ import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { reviewResumeAI, parseResumeAI } from '../utils/aiGenerator';
 import { useAuth } from '../components/AuthContext';
+import * as pdfjsLib from 'pdfjs-dist';
+
+// pdfjsLib.GlobalWorkerOptions.workerSrc will be set inside the handler to ensure local resolution
 
 export default function ResumeBuilder() {
     const [template, setTemplate] = useState('elite');
@@ -36,56 +39,111 @@ export default function ResumeBuilder() {
 
     // State
     const defaultPersonal = {
-        fullName: 'John Doe',
-        role: 'Senior Software Architect',
-        email: 'john.doe@example.com',
-        phone: '+1 234 567 890',
-        location: 'San Francisco, CA',
-        summary: 'A results-driven professional with over 8 years of experience in building scalable web applications and leading high-performance teams. Expert in modern JavaScript frameworks and cloud architecture.',
+        fullName: 'SUMIT KUMAR GUPTA',
+        role: 'iOS Developer',
+        email: 'sksumitkumar346@gmail.com',
+        phone: '8986292042',
+        location: 'Bengaluru',
+        summary: 'iOS Developer with over 3+ years of experience in developing high-performance applications using Swift and SwiftUI. Skilled in collaborating with cross-functional teams to deliver effective software solutions. Proficient in project management tools like Jira and committed to integrating new technologies for process optimization.',
         customLinks: [
-            { type: 'linkedin', url: 'linkedin.com/in/johndoe' },
-            { type: 'github', url: 'github.com/johndoe' }
+            { type: 'linkedin', url: 'linkedin.com/in/sumit-kumar-gupta-6a968b95' }
         ]
     };
 
+    const defaultExperience = [
+        {
+            id: 1,
+            company: 'Kibbcom India Private Limited',
+            role: 'iOS Developer',
+            duration: 'Jul 2022 - Present',
+            location: 'Bengaluru',
+            desc: 'Engineered and maintained high-performance iOS applications using Swift and SwiftUI.\nCollaborated with cross-functional teams to deliver effective software solutions.\nProficient in project management tools like Jira and version control with Git.',
+            isBulleted: true,
+            extraFields: []
+        }
+    ];
+
+    const defaultProjects = [
+        {
+            id: 1,
+            title: 'Zedbud - Community App',
+            duration: '2023',
+            stack: 'SwiftUI, Firebase, Cloud Messaging',
+            desc: 'Developed a feature-rich community app with real-time notifications and feed updates.\nImplemented secure authentication and real-time database integration.',
+            isBulleted: true,
+            extraFields: []
+        },
+        {
+            id: 2,
+            title: 'CTEK - Hardware Interface',
+            duration: '2022',
+            stack: 'CoreBluetooth, SwiftUI',
+            desc: 'Integrated hardware communication protocols using CoreBluetooth for seamless device interaction.',
+            isBulleted: true,
+            extraFields: []
+        },
+        {
+            id: 3,
+            title: 'TrackMyOffice',
+            duration: '2022',
+            stack: 'Swift, UIKit, SQL',
+            desc: 'Internal office management tool for tracking tasks and employee productivity.',
+            isBulleted: true,
+            extraFields: []
+        }
+    ];
+
+    const defaultEducation = [
+        { id: 1, school: 'PES University', degree: 'Bachelor of Technology in Computer Science', year: '2022', extraFields: [{ label: 'Location', value: 'Bengaluru' }] }
+    ];
+
+    const defaultSkills = [
+        { name: 'SwiftUI & Swift', level: 95 },
+        { name: 'UIKit & MVC/MVVM', level: 90 },
+        { name: 'Firebase & Cloud Services', level: 85 },
+        { name: 'Core Data & SQL', level: 80 },
+        { name: 'Git & Azure', level: 85 },
+        { name: 'Jira & Agile', level: 90 }
+    ];
+
+    const defaultAchievements = [
+        { id: 1, title: 'MERN Stack Development Certification' },
+        { id: 2, title: 'Linux & Docker Proficiency' }
+    ];
+
     const [personalInfo, setPersonalInfo] = useState(defaultPersonal);
 
-    const [sectionOrder, setSectionOrder] = useState(['projects', 'experience', 'skills', 'education', 'achievements', 'languages']);
+    const [sectionOrder, setSectionOrder] = useState(['experience', 'projects', 'skills', 'education', 'achievements', 'languages']);
     const [sectionTitles, setSectionTitles] = useState({
-        projects: 'PROJECTS',
-        experience: 'EXPERIENCE',
-        skills: 'TECHNICAL SKILLS',
+        projects: 'KEY PROJECTS',
+        experience: 'PROFESSIONAL EXPERIENCE',
+        skills: 'CORE SKILLS',
         education: 'EDUCATION',
-        achievements: 'HONORS & AWARDS',
+        achievements: 'CERTIFICATIONS & AWARDS',
         languages: 'LANGUAGES'
     });
-    const [experience, setExperience] = useState([
-        { id: 1, company: 'Tech Solutions Inc.', role: 'Senior Developer', duration: '2021 - Present', desc: 'Leading the development of a flagship cloud platform, improving deployment efficiency by 40%.', isBulleted: true }
-    ]);
-    const [projects, setProjects] = useState([
-        { id: 1, title: 'Quantum E-commerce', duration: '2023', stack: 'React, Node.js, AWS', desc: 'Built a high-performance e-commerce engine handling 10k+ concurrent users.', isBulleted: true }
-    ]);
-    const [education, setEducation] = useState([
-        { id: 1, school: 'Global Technical University', degree: 'B.S. in Computer Science', year: '2018' }
-    ]);
-    const [skills, setSkills] = useState([
-        { name: 'Full Stack Development', level: 90 },
-        { name: 'Cloud Architecture', level: 85 },
-        { name: 'System Design', level: 80 }
-    ]);
-    const [achievements, setAchievements] = useState([
-        { id: 1, title: 'Excellence in Engineering Award 2023' }
-    ]);
+    const [experience, setExperience] = useState(defaultExperience);
+    const [projects, setProjects] = useState(defaultProjects);
+    const [education, setEducation] = useState(defaultEducation);
+    const [skills, setSkills] = useState(defaultSkills);
+    const [achievements, setAchievements] = useState(defaultAchievements);
     const [languages, setLanguages] = useState([
-        { name: 'English', label: 'Native' },
-        { name: 'Spanish', label: 'Professional' }
-    ]);
-    const [dayLife, setDayLife] = useState([
-        { activity: 'Strategic Planning', percentage: 40 },
-        { activity: 'Core Development', percentage: 40 },
-        { activity: 'Mentorship', percentage: 20 }
+        { name: 'English', label: 'Fluent' },
+        { name: 'Hindi', label: 'Native' }
     ]);
     const [customSections, setCustomSections] = useState([]);
+
+    const restoreMyProfile = () => {
+        setPersonalInfo(defaultPersonal);
+        setExperience(defaultExperience);
+        setProjects(defaultProjects);
+        setEducation(defaultEducation);
+        setSkills(defaultSkills);
+        setAchievements(defaultAchievements);
+        setImportModal(false);
+        setSaveSuccess(true);
+        setTimeout(() => setSaveSuccess(false), 2000);
+    };
 
     useEffect(() => {
         const savedData = getResume();
@@ -97,7 +155,6 @@ export default function ResumeBuilder() {
             setAchievements(savedData.achievements || []);
             setProjects(savedData.projects || []);
             setLanguages(savedData.languages || []);
-            setDayLife(savedData.dayLife || []);
             setCustomSections(savedData.customSections || []);
             if (savedData.sectionTitles) setSectionTitles(savedData.sectionTitles);
             if (savedData.template) setTemplate(savedData.template);
@@ -214,7 +271,7 @@ export default function ResumeBuilder() {
         setIsSaving(true);
         saveResume({
             personalInfo, experience, education, skills, achievements, projects, languages,
-            dayLife, sectionOrder, template, customSections, sectionTitles,
+            sectionOrder, template, customSections, sectionTitles,
             themeColor, fontFamily, bulletStyle, sectionGap,
             pageMargin, headerStyle, atsMode, showIcons
         });
@@ -228,7 +285,7 @@ export default function ResumeBuilder() {
     const handleExportJSON = () => {
         const data = {
             personalInfo, experience, education, skills, achievements, projects, languages,
-            dayLife, sectionOrder, template, customSections, sectionTitles,
+            sectionOrder, template, customSections, sectionTitles,
             themeColor, fontFamily, bulletStyle, sectionGap, pageMargin, headerStyle, atsMode, showIcons
         };
         const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -287,19 +344,105 @@ export default function ResumeBuilder() {
         if (!rawResumeText.trim()) return;
         setIsImporting(true);
         try {
-            const extracted = await parseResumeAI(rawResumeText);
-            if (extracted.personalInfo) setPersonalInfo({ ...personalInfo, ...extracted.personalInfo, customLinks: personalInfo.customLinks });
-            if (extracted.experience) setExperience(extracted.experience);
-            if (extracted.projects) setProjects(extracted.projects);
-            if (extracted.education) setEducation(extracted.education);
-            if (extracted.skills) setSkills(extracted.skills);
-            if (extracted.achievements) setAchievements(extracted.achievements);
-            if (extracted.languages) setLanguages(extracted.languages);
-            setImportModal(false);
-            setRawResumeText('');
-        } catch (err) {
-            alert("AI Parsing failed. Try again with cleaner text.");
+            const result = await parseResumeAI(rawResumeText);
+            if (result) {
+                if (result.personalInfo) setPersonalInfo({ ...defaultPersonal, ...result.personalInfo });
+                if (result.experience) setExperience(result.experience);
+                if (result.education) setEducation(result.education);
+                if (result.skills) setSkills(result.skills);
+                if (result.projects) setProjects(result.projects);
+                if (result.achievements) setAchievements(result.achievements);
+                if (result.languages) setLanguages(result.languages);
+                setImportModal(false);
+                setRawResumeText('');
+            }
+        } catch (error) {
+            console.error('AI Import failed:', error);
         } finally {
+            setIsImporting(false);
+        }
+    };
+
+    const handleImportPDF = async (e) => {
+        const file = e.target.files[0];
+        if (!file || file.type !== 'application/pdf') return;
+
+        setIsImporting(true);
+        try {
+            // Set local worker explicitly before any operations
+            pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
+                'pdfjs-dist/build/pdf.worker.mjs',
+                import.meta.url
+            ).toString();
+
+            const reader = new FileReader();
+            reader.onload = async function () {
+                try {
+                    const typedarray = new Uint8Array(this.result);
+                    const pdf = await pdfjsLib.getDocument({
+                        data: typedarray,
+                        useWorkerFetch: false,
+                        isEvalSupported: false
+                    }).promise;
+                    let fullText = "";
+
+                    if (pdf.numPages === 0) {
+                        throw new Error("The PDF document has no pages.");
+                    }
+
+                    for (let i = 1; i <= pdf.numPages; i++) {
+                        const page = await pdf.getPage(i);
+                        // Using includeMarkedContent for deeper text recovery in complex/tagged PDFs
+                        const textContent = await page.getTextContent({ includeMarkedContent: true });
+
+                        const items = textContent.items.sort((a, b) => {
+                            const yDiff = b.transform[5] - a.transform[5];
+                            if (Math.abs(yDiff) > 3) return yDiff;
+                            return a.transform[4] - b.transform[4];
+                        });
+
+                        const pageText = items.map(item => item.str).join(" ");
+                        fullText += pageText + "\n";
+                    }
+
+                    if (!fullText.trim() || fullText.replace(/\s/g, '').length < 20) {
+                        throw new Error("No readable text found. This PDF might be a scanned image or protected.");
+                    }
+
+                    setRawResumeText(fullText);
+
+                    // Directly trigger AI parse
+                    const result = await parseResumeAI(fullText);
+                    if (result) {
+                        if (result.personalInfo) setPersonalInfo({ ...defaultPersonal, ...result.personalInfo });
+                        if (result.experience) setExperience(result.experience);
+                        if (result.education) setEducation(result.education);
+                        if (result.skills) setSkills(result.skills);
+                        if (result.projects) setProjects(result.projects);
+                        if (result.achievements) setAchievements(result.achievements);
+                        if (result.languages) setLanguages(result.languages);
+                        setImportModal(false);
+                        setSaveSuccess(true);
+                        setTimeout(() => setSaveSuccess(false), 3000);
+                    } else {
+                        alert("AI was unable to parse the PDF text. You can still manually edit the text in the 'AI Text Parse' box below.");
+                    }
+                } catch (err) {
+                    console.error('Inner PDF processing error:', err);
+                    alert("Unable to read text from this PDF. It might be a scanned image (flat photo) or have security locks.\n\nRedirecting you to the AI Text Parser so you can paste the text manually.");
+                    // Scroll to the text area so they can paste
+                    setTimeout(() => {
+                        const area = document.getElementById('ai-text-area');
+                        if (area) area.scrollIntoView({ behavior: 'smooth' });
+                    }, 500);
+                } finally {
+                    setIsImporting(false);
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        } catch (error) {
+            console.error('PDF reader error:', error);
+            alert("Failed to read PDF file.");
             setIsImporting(false);
         }
     };
@@ -462,21 +605,34 @@ export default function ResumeBuilder() {
                             <h2 style={{ fontSize: '1.8rem', fontWeight: '800', marginBottom: '0.5rem', color: 'white' }}>Elite Data Hub</h2>
                             <p style={{ color: '#aaa', marginBottom: '2rem', fontSize: '0.95rem' }}>Fast-track your resume building by importing existing data.</p>
 
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '2rem' }}>
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
                                 <div style={{ background: 'rgba(255,255,255,0.03)', padding: '1.5rem', borderRadius: '16px', border: '1px dashed rgba(255,255,255,0.1)', textAlign: 'center' }}>
                                     <Upload size={32} color="#3b82f6" style={{ marginBottom: '1rem' }} />
-                                    <h3 style={{ fontSize: '1rem', fontWeight: '700', color: 'white', marginBottom: '0.5rem' }}>JSON Backup</h3>
-                                    <p style={{ fontSize: '0.8rem', color: '#666', marginBottom: '1rem' }}>Upload a .json file from a previous export.</p>
-                                    <label className="btn-outline" style={{ display: 'inline-flex', cursor: 'pointer', padding: '0.5rem 1rem', fontSize: '0.8rem' }}>
-                                        Choose File <input type="file" accept=".json" onChange={handleImportJSON} style={{ display: 'none' }} />
+                                    <h3 style={{ fontSize: '1rem', fontWeight: '700', color: 'white', marginBottom: '0.5rem' }}>Direct PDF</h3>
+                                    <p style={{ fontSize: '0.8rem', color: '#666', marginBottom: '1rem' }}>Upload your PDF resume directly.</p>
+                                    <label className="btn-outline" style={{ display: 'inline-flex', cursor: 'pointer', padding: '0.5rem 1rem', fontSize: '0.8rem', width: '100%', justifyContent: 'center' }}>
+                                        {isImporting ? 'Processing...' : 'Choose PDF'}
+                                        <input type="file" accept=".pdf" onChange={handleImportPDF} style={{ display: 'none' }} disabled={isImporting} />
                                     </label>
                                 </div>
-                                <div style={{ background: 'rgba(59, 130, 246, 0.05)', padding: '1.5rem', borderRadius: '16px', border: '1px solid rgba(59, 130, 246, 0.2)', textAlign: 'center' }}>
-                                    <Sparkles size={32} color="#3b82f6" style={{ marginBottom: '1rem' }} />
-                                    <h3 style={{ fontSize: '1rem', fontWeight: '700', color: 'white', marginBottom: '0.5rem' }}>AI Text Parse</h3>
-                                    <p style={{ fontSize: '0.8rem', color: '#666', marginBottom: '1rem' }}>Paste your old resume text & let AI do the work.</p>
-                                    <button onClick={() => document.getElementById('ai-text-area').scrollIntoView()} className="btn-primary" style={{ padding: '0.5rem 1rem', fontSize: '0.8rem' }}>Start AI Sync</button>
+                                <div style={{ background: 'rgba(255,255,255,0.03)', padding: '1.5rem', borderRadius: '16px', border: '1px dashed rgba(255,255,255,0.1)', textAlign: 'center' }}>
+                                    <FileText size={32} color="#10b981" style={{ marginBottom: '1rem' }} />
+                                    <h3 style={{ fontSize: '1rem', fontWeight: '700', color: 'white', marginBottom: '0.5rem' }}>JSON Sync</h3>
+                                    <p style={{ fontSize: '0.8rem', color: '#666', marginBottom: '1rem' }}>Import from .json backup file.</p>
+                                    <label className="btn-outline" style={{ display: 'inline-flex', cursor: 'pointer', padding: '0.5rem 1rem', fontSize: '0.8rem', width: '100%', justifyContent: 'center' }}>
+                                        Browse JSON <input type="file" accept=".json" onChange={handleImportJSON} style={{ display: 'none' }} />
+                                    </label>
                                 </div>
+                                <div style={{ background: 'rgba(59, 130, 246, 0.1)', padding: '1.5rem', borderRadius: '16px', border: '1px solid rgba(59, 130, 246, 0.3)', textAlign: 'center' }}>
+                                    <User size={32} color="#3b82f6" style={{ marginBottom: '1rem' }} />
+                                    <h3 style={{ fontSize: '1rem', fontWeight: '700', color: 'white', marginBottom: '0.5rem' }}>Restore My Profile</h3>
+                                    <p style={{ fontSize: '0.8rem', color: '#666', marginBottom: '1rem' }}>Instant pre-fill with your iOS Dev data.</p>
+                                    <button onClick={restoreMyProfile} className="btn-primary" style={{ padding: '0.5rem 1rem', fontSize: '0.8rem', width: '100%' }}>Magic Pre-fill</button>
+                                </div>
+                            </div>
+                            <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
+                                <span style={{ background: '#1a1f2e', padding: '0 1rem', fontSize: '0.7rem', color: '#666', zIndex: 1, position: 'relative' }}>OR USE AI POWERED TEXT PARSING</span>
+                                <div style={{ height: '1px', background: 'rgba(255,255,255,0.05)', marginTop: '-10px' }}></div>
                             </div>
 
                             <div id="ai-text-area" style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '1.5rem' }}>
@@ -675,7 +831,7 @@ export default function ResumeBuilder() {
                                             <InputField label="Project Title" value={p.title} onChange={(e) => updateItem('proj', i, 'title', e.target.value)} />
                                             <InputField label="Tech Stack" value={p.stack} onChange={(e) => updateItem('proj', i, 'stack', e.target.value)} />
                                             <InputField label="Duration" value={p.duration} onChange={(e) => updateItem('proj', i, 'duration', e.target.value)} />
-                                            
+
                                             <div style={{ padding: '0.8rem', background: 'rgba(0,0,0,0.1)', borderRadius: '8px', marginBottom: '1rem' }}>
                                                 <div style={{ fontSize: '0.7rem', opacity: 0.5, marginBottom: '0.5rem', textTransform: 'uppercase' }}>Extra Fields (e.g. GitHub Link)</div>
                                                 {p.extraFields?.map((f, idx) => (
