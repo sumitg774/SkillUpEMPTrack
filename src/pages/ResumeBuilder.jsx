@@ -449,13 +449,60 @@ export default function ResumeBuilder() {
 
     const downloadPDF = async () => {
         const element = resumeRef.current;
-        const canvas = await html2canvas(element, { scale: 3, useCORS: true });
-        const imgData = canvas.toDataURL('image/png');
-        const pdf = new jsPDF('p', 'mm', 'a4');
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-        pdf.save(`${personalInfo.fullName.replace(/\s+/g, '_')}_Resume.pdf`);
+        if (!element) return;
+
+        try {
+            const originalScrollPos = window.scrollY;
+            window.scrollTo(0, 0);
+
+            const canvas = await html2canvas(element, {
+                scale: 2.5,
+                useCORS: true,
+                backgroundColor: '#ffffff',
+                logging: false,
+                onclone: (clonedDoc) => {
+                    // CRITICAL: Remove the scale transform from the cloned element
+                    // This ensures html2canvas captures the REAL size (210mm x 297mm+)
+                    const paper = clonedDoc.querySelector('.resume-paper');
+                    if (paper) {
+                        paper.style.transform = 'none';
+                        paper.style.margin = '0';
+                        paper.style.boxShadow = 'none';
+                        paper.style.width = '210mm'; // Force exact A4 width
+                        paper.style.minHeight = '297mm';
+                    }
+                }
+            });
+
+            window.scrollTo(0, originalScrollPos);
+
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = pdf.internal.pageSize.getHeight();
+
+            const imgWidth = pdfWidth;
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+            let heightLeft = imgHeight;
+            let position = 0;
+
+            // Page 1
+            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight, undefined, 'FAST');
+            heightLeft -= pdfHeight;
+
+            while (heightLeft > 0) {
+                position = heightLeft - imgHeight;
+                pdf.addPage();
+                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight, undefined, 'FAST');
+                heightLeft -= pdfHeight;
+            }
+
+            pdf.save(`${personalInfo.fullName.replace(/\s+/g, '_')}_Resume.pdf`);
+        } catch (error) {
+            console.error('PDF Generation failed:', error);
+            alert("Failed to generate PDF. Please try again.");
+        }
     };
 
     const getLinkIcon = (type, size = 12) => {
